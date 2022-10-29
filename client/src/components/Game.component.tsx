@@ -19,7 +19,11 @@ const Game = (
     return (
         <div className="Game">
             <Text socket={props.socket} />
-            <Board socket={props.socket} setTarget={(target: string) => setTarget(target)} />
+            <Board
+                socket={props.socket}
+                target={target}
+                setTarget={(target: string) => setTarget(target)}
+            />
             <Menu socket={props.socket} target={target} />
         </div>
     )

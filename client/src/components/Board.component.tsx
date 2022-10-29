@@ -4,14 +4,17 @@ import { Socket } from 'socket.io-client'
 const Board = (
     props: {
         socket: Socket,
+        target: String,
         setTarget: (target: string) => void
     }) => {
 
     const [allies, setAllies] = useState(Array<String>)
     const [enemies, setEnemies] = useState(Array<String>)
+    const [choice, setChoice] = useState(String)
 
-    const choose = () => {
-        console.log("lol")
+    const choose = (target: string) => {
+        target === choice ? setChoice("") : setChoice(target)
+        target === props.target ? props.setTarget("") : props.setTarget(target)
     }
 
     props.socket.on("board-info", (data: {allies: Array<String>, enemies: Array<String>}) => {
@@ -25,10 +28,8 @@ const Board = (
                 {allies.map((ally) => (
                     <div key={allies.indexOf(ally)}>
                         <div
-                            className="Character"
-                            onClick={() => {
-                                props.setTarget(ally.toString())
-                            }}>
+                            className={choice === ally ? "Character active" : "Character"}
+                            onClick={() => choose(ally.toString())}>
                         </div>
                     </div>
                 ))}
@@ -37,11 +38,8 @@ const Board = (
                 {enemies.map((enemy) => (
                     <div key={enemies.indexOf(enemy)}>
                         <div
-                            className="Character"
-                            onClick={() => {
-                                props.setTarget(enemy.toString())
-                                choose()
-                            }}>
+                            className={choice === enemy ? "Character active" : "Character"}
+                            onClick={() => choose(enemy.toString())}>
                         </div>
                     </div>
                 ))}
