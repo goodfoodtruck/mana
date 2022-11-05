@@ -17,17 +17,14 @@ export default class Game {
         this.io = party.io
 
         this.allies = party.sockets.map(socket => new Unit(socket.id, socket))
-        this.enemies = [new Unit("IA1"), new Unit("IA2")]
+        this.enemies = [new Unit("IA1"), new Unit("IA2"), new Unit("IA3"), new Unit("IA4")]
 
         this.order = this.order.concat(this.allies, this.enemies)
         this.player = this.order[0]
     }
 
     public Start() {
-        this.io.emit("board-info", {
-            allies: this.allies.map(ally => ally.id),
-            enemies: this.enemies.map(enemy => enemy.id)
-        })
+        this.Update()
         this.Round()
     }
 
@@ -61,10 +58,8 @@ export default class Game {
 
                     this.io.emit("message", `${targetID} is dead`)
 
-                    this.io.emit("board-info", {
-                        allies: this.allies.map(ally => ally.id),
-                        enemies: this.enemies.map(enemy => enemy.id)
-                    })
+                    this.Update()
+
                     if (this.enemies.length === 0) {
                         this.End()
                     }
@@ -72,6 +67,8 @@ export default class Game {
                 this.Turn()
             })
         } else {
+            this.player.attacks(this.order[0])
+            this.Update()
             this.io.emit("message", `${this.player.id} attacked ${this.order[0].id}`)
             this.Turn()
         }
@@ -87,5 +84,12 @@ export default class Game {
         }
         
         setTimeout(() => this.Round(), 500)
+    }
+
+    private Update() {
+        this.io.emit("game-info", {
+            allies: this.allies.map(ally => ally.info),
+            enemies: this.enemies.map(enemy => enemy.info)
+        })
     }
 }

@@ -1,9 +1,12 @@
 import { useState } from "react"
 import { Socket } from "socket.io-client"
+import PlayerStatus from "./PlayerStatus.component"
+import { Unit } from "../interfaces/unit"
 
 const Menu = (
     props: {
-        socket: Socket, 
+        socket: Socket,
+        allies: Array<Unit>,
         target: string
     }) => {
     const [isMyTurn, setIsMyTurn] = useState(false)
@@ -27,7 +30,14 @@ const Menu = (
 
     return (
         <div className='Menu'>
-            <button onClick={pressButton}>{text}</button>
+            <div className="actions">
+                <div className="Button" onClick={pressButton}>{text}</div>
+            </div>
+            <div className="status">
+                {props.allies.map(ally => (
+                    <PlayerStatus key={ally.id} player={ally} />
+                ))}
+            </div>
         </div>
     )
 }

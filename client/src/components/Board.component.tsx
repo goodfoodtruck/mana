@@ -1,45 +1,41 @@
 import { useState } from 'react'
 import { Socket } from 'socket.io-client'
+import { Unit } from '../interfaces/unit'
 
 const Board = (
     props: {
         socket: Socket,
+        allies: Array<Unit>,
+        enemies: Array<Unit>,
         target: String,
         setTarget: (target: string) => void
     }) => {
 
-    const [allies, setAllies] = useState(Array<String>)
-    const [enemies, setEnemies] = useState(Array<String>)
     const [choice, setChoice] = useState(String)
 
     const choose = (target: string) => {
         target === choice ? setChoice("") : setChoice(target)
         target === props.target ? props.setTarget("") : props.setTarget(target)
     }
-
-    props.socket.on("board-info", (data: {allies: Array<String>, enemies: Array<String>}) => {
-        setAllies(data.allies)
-        setEnemies(data.enemies)
-    })
-
+    
     return (
         <div className='Board'>
             <div className='side Left'>
-                {allies.map((ally) => (
-                    <div key={allies.indexOf(ally)}>
+                {props.allies.map((ally) => (
+                    <div key={ally.id}>
                         <div
-                            className={choice === ally ? "Character active" : "Character"}
-                            onClick={() => choose(ally.toString())}>
+                            className={choice === ally.id ? "Character active" : "Character"}
+                            onClick={() => choose(ally.id)}>
                         </div>
                     </div>
                 ))}
             </div>
             <div className='side Right'>
-                {enemies.map((enemy) => (
-                    <div key={enemies.indexOf(enemy)}>
+                {props.enemies.map((enemy) => (
+                    <div key={enemy.id}>
                         <div
-                            className={choice === enemy ? "Character active" : "Character"}
-                            onClick={() => choose(enemy.toString())}>
+                            className={choice === enemy.id ? "Character active" : "Character"}
+                            onClick={() => choose(enemy.id)}>
                         </div>
                     </div>
                 ))}
