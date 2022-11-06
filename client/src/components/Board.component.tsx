@@ -19,24 +19,22 @@ const Board = (
     }
     
     return (
-        <div className='Board'>
-            <div className='side Left'>
+        <div className="Board">
+            <div className="side">
                 {props.allies.map((ally) => (
-                    <div key={ally.id}>
-                        <div
-                            className={choice === ally.id ? "Character active" : "Character"}
-                            onClick={() => choose(ally.id)}>
-                        </div>
+                    <div
+                        key={ally.id}
+                        className={choice === ally.id ? "Character active" : "Character"}
+                        onClick={() => choose(ally.id)}>
                     </div>
                 ))}
             </div>
-            <div className='side Right'>
+            <div className="side">
                 {props.enemies.map((enemy) => (
-                    <div key={enemy.id}>
-                        <div
-                            className={choice === enemy.id ? "Character active" : "Character"}
-                            onClick={() => choose(enemy.id)}>
-                        </div>
+                    <div
+                        key={enemy.id}
+                        className={choice === enemy.id ? "Character active" : "Character"}
+                        onClick={() => choose(enemy.id)}>
                     </div>
                 ))}
             </div>

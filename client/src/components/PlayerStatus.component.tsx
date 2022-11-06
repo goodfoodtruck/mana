@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Unit } from "../interfaces/unit"
 
 const PlayerStatus = (

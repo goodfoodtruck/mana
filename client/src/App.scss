@@ -27,6 +27,7 @@ body {
 
 .Board {
     display: flex;
+    height: 70vh;
     background-color: rgb(15, 0, 56);
 
     .side {
@@ -34,15 +35,24 @@ body {
         flex-direction: column;
         justify-content: center;
         width: 50%;
-        padding: 15px;
+        padding-right: 10vw;
     }
 
     .Character {
-        margin: 30px auto;
-        width: 5vw;
-        height: 5vw;
+        width: 9vw;
+        height: 9vw;
         background-color: rgb(230, 227, 238);
         cursor: pointer;
+
+        &:nth-child(1),
+        &:nth-child(3) {
+            align-self: center;
+        }
+
+        &:nth-child(2),
+        &:nth-child(4) {
+            align-self: end;
+        }
 
         &:hover {
             background-color: lighten(red, 17%);
@@ -56,7 +66,7 @@ body {
 
 .Menu {
     display: flex;
-    height: 100px;
+    height: 100%;
     border-top: rgb(230, 227, 238) 1px solid;
 
     .actions {
