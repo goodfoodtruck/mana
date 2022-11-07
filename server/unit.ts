@@ -13,7 +13,7 @@ export default class Unit {
     
     public attacks(target: Unit) {
         // const damage = Math.floor(Math.random() * 5)
-        const damage = 10
+        const damage = 50
         target.receiveDamage(damage)
         return damage
     }

@@ -17,7 +17,7 @@ export default class Game {
         this.io = party.io
 
         this.allies = party.sockets.map(socket => new Unit(socket.id, socket))
-        this.enemies = [new Unit("IA1"), new Unit("IA2"), new Unit("IA3"), new Unit("IA4")]
+        this.enemies = [new Unit("IA1")]
 
         this.order = this.order.concat(this.allies, this.enemies)
         this.player = this.order[0]
@@ -25,20 +25,18 @@ export default class Game {
 
     public Start() {
         this.Update()
-        this.Round()
+        return this.Round()
     }
 
     private End() {
         this.io.emit("game-state", false)
-        this.party.endGame()
+        return this.party.endGame()
     }
 
     private Round() {
         this.io.emit("turn-state", false)
         this.io.emit("message", `It's ${this.player.id}'s turn`)
 
-
-        // Check if player is a user
         if (this.player.socket) {
             this.player.socket.emit("turn-state", true)
 
@@ -61,27 +59,22 @@ export default class Game {
                     this.Update()
 
                     if (this.enemies.length === 0) {
-                        this.End()
+                        return this.End()
                     }
                 }
-                this.Turn()
+                return this.Turn()
             })
         } else {
             this.player.attacks(this.order[0])
             this.Update()
             this.io.emit("message", `${this.player.id} attacked ${this.order[0].id}`)
-            this.Turn()
+            return this.Turn()
         }
     }
 
     private Turn() {
         const playerPlace = this.order.indexOf(this.player)
-        
-        if (playerPlace === this.order.length - 1) {
-            this.player = this.order[0]
-        } else {
-            this.player = this.order[playerPlace + 1]
-        }
+        playerPlace === (this.order.length - 1) ? this.player = this.order[0] : this.player = this.order[playerPlace + 1]
         
         setTimeout(() => this.Round(), 500)
     }

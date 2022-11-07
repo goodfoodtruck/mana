@@ -73,7 +73,7 @@ export default class Party {
     private startGame() {
         this.game = new Game(this)
         this.io.emit("game-state", true)
-        this.game.Start()
+        return this.game.Start()
     }
 
     public endGame() {

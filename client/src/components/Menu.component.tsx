@@ -13,7 +13,9 @@ const Menu = (
     const [text, setText] = useState(String)
 
     const pressButton = () => {
-        if (isMyTurn) {
+        if (isMyTurn && props.target) {
+            console.log(props.target);
+            
             props.socket.emit("press", props.target)
         }
     }

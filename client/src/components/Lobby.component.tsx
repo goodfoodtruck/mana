@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { io, Socket } from "socket.io-client"
-import JoinParty from "./Party.component"
+import JoinParty from "./JoinParty.component"
 import Game from "./Game.component"
 
 const InitialSocket = io("http://localhost:4000/")
