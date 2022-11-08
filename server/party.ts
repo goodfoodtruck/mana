@@ -1,6 +1,7 @@
 import { Namespace, Server, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import Game from "./game"
+import Unit from "./unit"
 
 let parties: Array<Party> = []
 
@@ -9,35 +10,31 @@ export const manageParty = (io: Server, socket: Socket) => {
 
     socket.emit("party-create", partyID)
     parties.push(new Party(io, partyID))
-
-    socket.on("disconnect", () => {
-        parties = parties.filter(party => party.id !== partyID)
-    })
 }
 
 export default class Party {
 
     private game?: Game | null
     public io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
-    public sockets: Array<Socket>
     public id: number
-    public isOpen: boolean
+    public participants: Array<Unit> = []
+    public isOpen: boolean = true
 
     constructor(io: Server, partyID: number) {
         this.io = io.of("/" + partyID)
-        this.sockets = []
         this.id = partyID
-        this.isOpen = true
 
         this.io.on("connect", socket => {
-            this.socketEvents(socket)
+            socket.on("player-info", (name: string) => {
+                this.socketEvents(name, socket)
+            })
         })
     }
 
-    private socketEvents(socket: Socket) {
-        this.add(socket)
+    private socketEvents(name:string, socket: Socket) {
+        this.add(name, socket)
 
-        this.io.emit("party-info", this.sockets.map(socket => socket.id))
+        this.io.emit("party-info", this.participants.map(participant => participant.id))
 
         socket.on("start", () => {
             this.isOpen = false
@@ -49,19 +46,19 @@ export default class Party {
         })
         
         socket.on("disconnect", () => {
-            this.remove(socket)                
-            this.io.emit("party-info", this.sockets.map(socket => socket.id))
+            this.remove(name)                
+            this.io.emit("party-info", this.participants.map(participant => participant.id))
         })
     }
 
-    private add(socket: Socket) {
-        this.sockets.push(socket)
-        if (this.sockets.length == 3) this.isOpen = false
+    private add(name:string, socket: Socket) {
+        this.participants.push(new Unit(name, socket))
+        if (this.participants.length == 3) this.isOpen = false
     }
 
-    private remove(socket: Socket) {
-        this.sockets = this.sockets.filter(filterSocket => socket.id !== filterSocket.id)
-        if (this.sockets.length < 3) this.isOpen = true
+    private remove(name: string) {
+        this.participants = this.participants.filter(participant => name !== participant.id)
+        if (this.participants.length < 3) this.isOpen = true
     }
 
     private change(id: number, callback: (isOpen: boolean) => void) {
@@ -78,6 +75,6 @@ export default class Party {
 
     public endGame() {
         this.game = null
-        if (this.sockets.length < 3) this.isOpen = true
+        if (this.participants.length < 3) this.isOpen = true
     }
 }

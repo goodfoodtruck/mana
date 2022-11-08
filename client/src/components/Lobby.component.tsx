@@ -3,15 +3,19 @@ import { io, Socket } from "socket.io-client"
 import JoinParty from "./JoinParty.component"
 import Game from "./Game.component"
 
-const InitialSocket = io("http://localhost:4000/")
 
-const Lobby = () => {
-
+const Lobby = (
+    props: {
+        name: String
+    }
+) => {
+    
     const [socket, setSocket] = useState(io())
     const [partyID, setPartyID] = useState(Number)
     const [participants, setParticipants] = useState(Array<String>)
     const [isJoining, setIsJoining] = useState(false)
     const [inGame, setInGame] = useState(false)
+    const InitialSocket = io("http://localhost:4000/")
     const mountRef = useRef(false)
     
     const start = () => {
@@ -26,6 +30,10 @@ const Lobby = () => {
                 setPartyID(id)
             })
         }
+
+        socket.on("connect", () => {
+            socket.emit("player-info", props.name)
+        })
 
         return () => {
             mountRef.current = true
@@ -60,7 +68,7 @@ const Lobby = () => {
                         <ul>
                             {participants.map((participant) => (
                                 <li key={participants.indexOf(participant)}>
-                                    {participant === socket.id ? participant + " (You)" : participant}
+                                    {participant === props.name ? participant + " (You)" : participant}
                                 </li>
                             ))}
                         </ul>

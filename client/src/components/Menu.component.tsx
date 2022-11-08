@@ -14,8 +14,6 @@ const Menu = (
 
     const pressButton = () => {
         if (isMyTurn && props.target) {
-            console.log(props.target);
-            
             props.socket.emit("press", props.target)
         }
     }

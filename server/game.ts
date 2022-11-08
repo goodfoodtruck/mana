@@ -16,7 +16,7 @@ export default class Game {
         this.party = party
         this.io = party.io
 
-        this.allies = party.sockets.map(socket => new Unit(socket.id, socket))
+        this.allies = party.participants
         this.enemies = [new Unit("IA1")]
 
         this.order = this.order.concat(this.allies, this.enemies)
