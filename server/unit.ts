@@ -27,6 +27,10 @@ export default class Unit {
         return this._health
     }
 
+    set health(health: number) {
+        this._health = health
+    }
+
     get info() {
         return {
             health: this._health,

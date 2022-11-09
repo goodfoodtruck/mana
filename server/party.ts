@@ -73,8 +73,14 @@ export default class Party {
         return this.game.Start()
     }
 
-    public endGame() {
+    public endGame(repeat: boolean) {
+        this.io.emit("game-state", false)
         this.game = null
-        if (this.participants.length < 3) this.isOpen = true
+        if (repeat) {
+            this.startGame()
+        } else if (this.participants.length < 3) {
+            this.participants.map(participant => participant.health = 100)
+            this.isOpen = true
+        }
     }
 }
