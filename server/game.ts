@@ -34,18 +34,18 @@ export default class Game {
 
         if (this.player.socket) {
             this.player.socket.emit("turn-state", true)
-            this.player.socket.once("press", (targetID: string) => {
+            this.player.socket.once("press", (data: {choice: string, target: string}) => {
                 this.order.forEach(unit => {
-                    if (targetID === unit.id) return this.Action(unit)
+                    if (data.target === unit.id) return this.Action(data.choice, unit)
                 })
             })
         } else {
-            return this.Action(this.allies[Math.floor(Math.random() * this.allies.length)])
+            return this.Action("Attack", this.allies[Math.floor(Math.random() * this.allies.length)])
         }
     }
     
-    private Action(target: Unit) {
-        const damage = this.player.attacks(target)
+    private Action(choice: string, target: Unit) {
+        const damage = this.player.action(choice, target)
         if (target.health > 0) {
             this.io.emit("message", `${this.player.id} deals ${damage} to ${target.id}`)
         } else {
@@ -80,6 +80,7 @@ export default class Game {
     }
 
     private Update() {
+        this.io.emit("actions-info", this.player.actions)
         this.io.emit("game-info", {
             allies: this.allies.map(ally => ally.info),
             enemies: this.enemies.map(enemy => enemy.info)

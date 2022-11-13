@@ -10,28 +10,33 @@ const Menu = (
         target: string
     }) => {
     const [isMyTurn, setIsMyTurn] = useState(false)
-    const [text, setText] = useState(String)
+    const [actions, setActions] = useState(Array<string>)
 
-    const pressButton = () => {
+    const pressButton = (action: string) => {
         if (isMyTurn && props.target) {
-            props.socket.emit("press", props.target)
+            props.socket.emit("press", {choice: action, target: props.target})
         }
     }
 
     props.socket.on("turn-state", (myTurn: boolean) => {
         if (myTurn) {
             setIsMyTurn(true)
-            setText("Choose target")
         } else {
             setIsMyTurn(false)
-            setText("Wait for your round")
         }
+    })
+
+    props.socket.on("actions-info", (actions: string[]) => {
+        setActions(actions)
     })
 
     return (
         <div className='Menu'>
             <div className="actions">
-                <div className="Button" onClick={pressButton}>{text}</div>
+                {isMyTurn && actions.map(action => (
+                    <div key={action} className="Button" onClick={() => pressButton(action)}>{action}</div>
+                ))}
+                {!isMyTurn && <div>Wait for your round</div>}
             </div>
             <div className="status">
                 {props.allies.map(ally => (
