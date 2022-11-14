@@ -26,7 +26,7 @@ export default class Unit {
         return damage
     }
     
-    protected receiveDamage(damage: number) {
+    receiveDamage(damage: number) {
         this._health -= damage
         if (this._health < 0) this._health = 0 
     }

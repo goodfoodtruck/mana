@@ -2,6 +2,10 @@ import { Namespace, Server, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import Game from "./game"
 import Unit from "./unit"
+import Guardian from "./masteries/guardian"
+import Samurai from "./masteries/samurai"
+import Sage from "./masteries/sage"
+import Druid from "./masteries/druid"
 
 let parties: Array<Party> = []
 
@@ -25,15 +29,14 @@ export default class Party {
         this.id = partyID
 
         this.io.on("connect", socket => {
-            socket.on("player-info", (name: string) => {
-                this.socketEvents(name, socket)
+            socket.on("player-info", (data: {name: string, mastery: string}) => {
+                this.socketEvents(data.name, data.mastery, socket)
             })
         })
     }
 
-    private socketEvents(name:string, socket: Socket) {
-        this.add(name, socket)
-
+    private socketEvents(name:string, mastery: string, socket: Socket) {
+        this.add(name, mastery, socket)
         this.io.emit("party-info", this.participants.map(participant => participant.id))
 
         socket.on("start", () => {
@@ -51,8 +54,21 @@ export default class Party {
         })
     }
 
-    private add(name:string, socket: Socket) {
-        this.participants.push(new Unit(name, socket))
+    private add(name:string, mastery: string, socket: Socket) {
+        switch(mastery) {
+            case "Guardian":
+                this.participants.push(new Guardian(name, socket))
+                break
+            case "Samurai":
+                this.participants.push(new Samurai(name, socket))
+                break
+            case "Sage":
+                this.participants.push(new Sage(name, socket))
+                break
+            case "Druid":
+                this.participants.push(new Druid(name, socket))
+                break
+        }
         if (this.participants.length == 3) this.isOpen = false
     }
 

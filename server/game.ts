@@ -31,6 +31,7 @@ export default class Game {
     private Round() {
         this.io.emit("turn-state", false)
         this.io.emit("message", `It's ${this.player.id}'s turn`)
+        this.Update()
 
         if (this.player.socket) {
             this.player.socket.emit("turn-state", true)

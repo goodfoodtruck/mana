@@ -7,6 +7,7 @@ import Game from "./Game.component"
 const Lobby = (
     props: {
         name: String
+        mastery: String
     }
 ) => {
     
@@ -32,7 +33,7 @@ const Lobby = (
         }
 
         socket.on("connect", () => {
-            socket.emit("player-info", props.name)
+            socket.emit("player-info", {name: props.name, mastery: props.mastery})
         })
 
         return () => {

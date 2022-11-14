@@ -1,18 +1,23 @@
 import { useState } from 'react'
 import './App.scss'
+import Creation from './components/Creation.component'
 import Lobby from './components/Lobby.component'
 
 const App = () => {
 
     const [name, setName] = useState(String)
-    const [isName, setIsName] = useState(false)
+    const [mastery, setMastery] = useState(String)
+    const [isCreated, setIsCreated] = useState(false)
 
-    if (!isName) {
+    if (!isCreated) {
         return (
             <div className="App">
                 <main>
-                    <input placeholder="Enter Name" onChange={(e) => setName(e.target.value)}></input>
-                    <button onClick={() => setIsName(true)}>Go</button>
+                    <Creation
+                        setName={(name: string) => setName(name)}
+                        setMastery={(mastery: string) => setMastery(mastery)}
+                        setIsCreated={(state: boolean) => setIsCreated(state)}
+                    />
                 </main>
             </div>
         )
@@ -20,7 +25,10 @@ const App = () => {
         return (
             <div className="App">
                 <main>
-                    <Lobby name={name} />
+                    <Lobby
+                        name={name}
+                        mastery={mastery}
+                    />
                 </main>
             </div>
         )
