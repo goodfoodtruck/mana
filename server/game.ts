@@ -2,6 +2,7 @@ import { Namespace } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import Party from "./party"
 import Unit from "./unit"
+import Bestiary from "./bestiary/Bestiary"
 
 export default class Game {
 
@@ -17,7 +18,7 @@ export default class Game {
         this.io = party.io
 
         this.allies = party.participants
-        this.enemies = [new Unit("IA1")]
+        this.enemies = [new Bestiary[Math.floor(Math.random() * Bestiary.length)]]
 
         this.order = this.order.concat(this.allies, this.enemies)
         this.player = this.order[0]

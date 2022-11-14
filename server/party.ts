@@ -2,10 +2,10 @@ import { Namespace, Server, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import Game from "./game"
 import Unit from "./unit"
-import Guardian from "./masteries/guardian"
-import Samurai from "./masteries/samurai"
-import Sage from "./masteries/sage"
-import Druid from "./masteries/druid"
+import Guardian from "./masteries/Guardian.unit"
+import Samurai from "./masteries/Samurai.unit"
+import Sage from "./masteries/Sage.unit"
+import Druid from "./masteries/Druid.unit"
 
 let parties: Array<Party> = []
 
