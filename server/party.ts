@@ -39,7 +39,7 @@ export default class Party {
         this.add(name, mastery, socket)
         this.io.emit("party-info", this.participants.map(participant => participant.id))
 
-        socket.on("start", () => {
+        socket.on("launch-game", () => {
             this.isOpen = false
             this.startGame()
         })
@@ -84,19 +84,21 @@ export default class Party {
     }
 
     private startGame() {
-        this.game = new Game(this)
-        this.io.emit("game-state", true)
-        return this.game.Start()
+        this.io.emit("start-game", () => {
+            this.game = new Game(this)
+            return this.game.Start()
+        })
     }
 
     public endGame(repeat: boolean) {
-        this.io.emit("game-state", false)
-        this.game = null
-        if (repeat) {
-            this.startGame()
-        } else if (this.participants.length < 3) {
-            this.participants.map(participant => participant.health = 100)
-            this.isOpen = true
-        }
+        this.io.emit("end-game", () => {
+            this.game = null
+            if (repeat) {
+                this.startGame()
+            } else if (this.participants.length < 3) {
+                this.participants.map(participant => participant.health = 100)
+                this.isOpen = true
+            }
+        })
     }
 }

@@ -15,8 +15,8 @@ const Game = (
     const [enemies, setEnemies] = useState(Array<Unit>)
     const [target, setTarget] = useState(String)
 
-    props.socket.on("game-state", (state: boolean) => {
-        props.setInGame(state)
+    props.socket.on("end-game", () => {
+        props.setInGame(false)
     })
 
     props.socket.on("game-info", (data: {allies: Array<Unit>, enemies: Array<Unit>}) => {

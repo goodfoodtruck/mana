@@ -20,8 +20,7 @@ const Lobby = (
     const mountRef = useRef(false)
     
     const start = () => {
-        socket.emit("start")
-        setInGame(true)
+        socket.emit("launch-game")
     }
 
     useEffect(() => {
@@ -45,7 +44,7 @@ const Lobby = (
         setParticipants(participants)
     })
 
-    socket.on("game-state", () => {
+    socket.on("start-game", () => {
         setInGame(true)
     })
     

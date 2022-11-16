@@ -24,15 +24,17 @@ export default class Game {
         this.player = this.order[0]
     }
 
-    public Start() {
-        this.Update()
-        return this.Round()
+    public async Start() {
+        await this.Update()
+        this.io.emit("actions-info", this.player.actions, () => {
+            return this.Round()
+        })
     }
 
-    private Round() {
+    private async Round() {
+        await this.Update()
         this.io.emit("turn-state", false)
         this.io.emit("message", `It's ${this.player.id}'s turn`)
-        this.Update()
 
         if (this.player.socket) {
             this.player.socket.emit("turn-state", true)
@@ -46,7 +48,7 @@ export default class Game {
         }
     }
     
-    private Action(choice: string, target: Unit) {
+    private async Action(choice: string, target: Unit) {
         const damage = this.player.action(choice, target)
         if (target.health > 0) {
             this.io.emit("message", `${this.player.id} deals ${damage} to ${target.id}`)
@@ -70,7 +72,7 @@ export default class Game {
                 return this.party.endGame(false)
             }
         }
-        this.Update()
+        await this.Update()
         return this.Turn()
     }
 
@@ -81,11 +83,12 @@ export default class Game {
         setTimeout(() => this.Round(), 500)
     }
 
-    private Update() {
-        this.io.emit("actions-info", this.player.actions)
+    private async Update() {
         this.io.emit("game-info", {
             allies: this.allies.map(ally => ally.info),
             enemies: this.enemies.map(enemy => enemy.info)
+        }, () => {
+            return
         })
     }
 }
