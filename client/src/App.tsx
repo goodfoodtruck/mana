@@ -15,6 +15,7 @@ const App = () => {
                 <main>
                     <Creation
                         setName={(name: string) => setName(name)}
+                        mastery={mastery}
                         setMastery={(mastery: string) => setMastery(mastery)}
                         setIsCreated={(state: boolean) => setIsCreated(state)}
                     />
