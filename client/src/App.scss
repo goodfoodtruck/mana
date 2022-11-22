@@ -164,23 +164,45 @@ button[disabled]{
             }
         }
     }
-
-    .prompt {
+    
+    .btn {
         display: block;
-        margin: auto;
-        height: 1em;
-        border: 0;
-        border-bottom: 2px solid white;
-        background: transparent; 
-        font-family: "Reactor7";
-        font-size: 1em;
-        text-align: center;
-        color: white;
+        margin: 1em auto;
     }
+}
+
+.prompt {
+    display: block;
+    margin: auto;
+    height: 1em;
+    border: 0;
+    border-bottom: 2px solid white;
+    background: transparent; 
+    font-family: "Reactor7";
+    font-size: 1em;
+    text-align: center;
+    color: white;
+}
+
+.Lobby {
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    transform: translateX(-50%);
 
     .btn {
         display: block;
         margin: 1em auto;
+    }
+
+    .Party {
+        .title {
+            margin: 3vh auto;
+        }
+
+        .participant {
+            margin: 1vh 3vh;
+        }
     }
 }
 
@@ -283,14 +305,4 @@ button[disabled]{
             }
         }
     }
-}
-
-.Party {
-    position: absolute;
-    top: 100px;
-    left: 50%;
-    transform: translate(-50%);
-    padding: 10px;
-    background-color: rgb(42, 41, 46);
-    border: rgb(230, 227, 238) 1px solid;
 }

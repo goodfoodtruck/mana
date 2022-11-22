@@ -51,28 +51,24 @@ const Lobby = (
     if (!inGame) {
         return (
             <div className="Lobby">
-                <button onClick={start}>Start Game</button>
                 <div className="Party">
-                    <div className="Join-Party">
-                        <button onClick={() => setIsJoining(true)}>Join Party</button>
-                        {isJoining && <JoinParty
-                            socket={socket}
-                            setIsJoining={(state: boolean) => setIsJoining(state)}
-                            setSocket={(socket: Socket) => setSocket(socket)}  
-                            setPartyID={(id: number) => setPartyID(id)} 
-                        />}
+                    <div className="container">
+                        <label className="title">[Party {partyID}]</label>
+                        {participants.map((participant) => (
+                            <div className="participant" key={participants.indexOf(participant)}>
+                                {participant === props.name ? participant + " (You)" : participant}
+                            </div>
+                        ))}
+                        <input className="btn primary" type="submit" onClick={start} value="Start" />
                     </div>
-                    <div className="Lobby-Party">
-                        <h4>ID : {partyID}</h4>
-                        <h4>Party :</h4>
-                        <ul>
-                            {participants.map((participant) => (
-                                <li key={participants.indexOf(participant)}>
-                                    {participant === props.name ? participant + " (You)" : participant}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                </div>
+                <div className="container">
+                    <JoinParty
+                        socket={socket}
+                        setIsJoining={(state: boolean) => setIsJoining(state)}
+                        setSocket={(socket: Socket) => setSocket(socket)}  
+                        setPartyID={(id: number) => setPartyID(id)} 
+                    />
                 </div>
             </div>
         )

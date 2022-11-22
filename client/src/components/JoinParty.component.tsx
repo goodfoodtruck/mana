@@ -23,9 +23,8 @@ const JoinParty = (
 
     return (
         <div className="JoinParty">
-            <input placeholder="Enter Party" onChange={(e) => setInputID(e.target.value)}/>
-            <button onClick={() => changeSocket()}>Enter</button>
-            <button onClick={() => props.setIsJoining(false)}>Close</button>
+            <input className="prompt" placeholder="Enter Party ID" onChange={(e) => setInputID(e.target.value)}/>
+            <input className="btn success" type="submit" onClick={() => changeSocket()} value="Join" />
         </div>
     )
 
