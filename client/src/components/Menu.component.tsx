@@ -32,13 +32,13 @@ const Menu = (
 
     return (
         <div className='Menu'>
-            <div className="actions">
+            <div className="container actions">
                 {isMyTurn && actions.map(action => (
-                    <div key={action} className="Button" onClick={() => pressButton(action)}>{action}</div>
+                    <input key={action} className="btn success" type="submit" onClick={() => pressButton(action)} value={action} />
                 ))}
                 {!isMyTurn && <div>Wait for your round</div>}
             </div>
-            <div className="status">
+            <div className="container status">
                 {props.allies.map(ally => (
                     <PlayerStatus key={ally.id} player={ally} />
                 ))}

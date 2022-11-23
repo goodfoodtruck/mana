@@ -11,7 +11,9 @@ const Text = (props: { socket: Socket }) => {
 
     return (
         <div className='Text'>
-            {message}
+            <div className="container">
+                <p className="message">{message}</p>
+            </div>
         </div>
     )
 }
