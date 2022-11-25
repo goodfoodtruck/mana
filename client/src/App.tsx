@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import './App.scss'
 import Creation from './components/Creation.component'
 import Lobby from './components/Lobby.component'
 

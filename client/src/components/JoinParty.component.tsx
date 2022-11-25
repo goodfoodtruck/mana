@@ -4,7 +4,6 @@ import { io, Socket } from 'socket.io-client'
 const JoinParty = (
     props: {
         socket: Socket
-        setIsJoining: (state: boolean) => void
         setSocket: (socket: Socket) => void
         setPartyID: (id: number) => void
     }) => {
@@ -15,16 +14,17 @@ const JoinParty = (
         props.socket.emit("party-change", inputID, (isOpen: boolean) => {
             if (isOpen) {
                 props.setSocket(io("http://localhost:4000/" + inputID))
-                props.setIsJoining(false)
                 props.setPartyID(Number(inputID))
             }
         })
     }
 
     return (
-        <div className="JoinParty">
-            <input className="prompt" placeholder="Enter Party ID" onChange={(e) => setInputID(e.target.value)}/>
-            <input className="btn success" type="submit" onClick={() => changeSocket()} value="Join" />
+        <div className="Join">
+            <div className="container">
+                <input className="prompt" placeholder="Enter Party ID" onChange={(e) => setInputID(e.target.value)}/>
+                <button className="btn success" onClick={() => changeSocket()}>Join</button>
+            </div>    
         </div>
     )
 

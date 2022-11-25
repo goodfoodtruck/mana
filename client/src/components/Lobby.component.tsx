@@ -14,7 +14,6 @@ const Lobby = (
     const [socket, setSocket] = useState(io())
     const [partyID, setPartyID] = useState(Number)
     const [participants, setParticipants] = useState(Array<String>)
-    const [isJoining, setIsJoining] = useState(false)
     const [inGame, setInGame] = useState(false)
     const InitialSocket = io("http://localhost:4000/")
     const mountRef = useRef(false)
@@ -51,25 +50,22 @@ const Lobby = (
     if (!inGame) {
         return (
             <div className="Lobby">
-                <div className="Party">
-                    <div className="container">
-                        <label className="title">[Party {partyID}]</label>
+                <div className="container">
+                    <label className="title">[Party n°{partyID}]</label>
+                    <div className="Party">
                         {participants.map((participant) => (
                             <div className="participant" key={participants.indexOf(participant)}>
                                 {participant === props.name ? participant + " (You)" : participant}
                             </div>
                         ))}
-                        <input className="btn primary" type="submit" onClick={start} value="Start" />
                     </div>
+                    <button className="btn primary" onClick={start}>Start</button>
                 </div>
-                <div className="container">
-                    <JoinParty
-                        socket={socket}
-                        setIsJoining={(state: boolean) => setIsJoining(state)}
-                        setSocket={(socket: Socket) => setSocket(socket)}  
-                        setPartyID={(id: number) => setPartyID(id)} 
-                    />
-                </div>
+                <JoinParty
+                    socket={socket}
+                    setSocket={(socket: Socket) => setSocket(socket)}  
+                    setPartyID={(id: number) => setPartyID(id)} 
+                />
             </div>
         )
     } else {

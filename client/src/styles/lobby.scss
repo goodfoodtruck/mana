@@ -1,0 +1,29 @@
+.Lobby {
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    transform: translateX(-50%);
+
+    .title {
+        display: block;
+        margin-block: 1em;
+        text-align: center;
+    }
+
+    .btn {
+        display: block;
+        margin: 1em auto;
+    }
+
+    .container {
+        margin: 3vh;
+    }
+
+    .Party {
+        margin: 2vh;
+
+        .participant {
+            margin: 1vh 3vh;
+        }
+    }
+}

@@ -1,0 +1,43 @@
+.Creation {
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    transform: translateX(-50%);
+
+    .title {
+        display: block;
+        margin-top: 1em;
+        text-align: center;
+    }
+
+    .Masteries {
+        display: flex;
+        padding: 3vh;
+
+        .Mastery {
+            width: min-content;
+            margin: 2vh;
+            cursor: pointer;
+            text-align: center;
+            
+            img {
+                width: 95px;
+                border: 2px solid rgb(25, 33, 94);
+                border-radius: 7px;
+            }
+
+            &.active {
+                color: gold;
+            }
+
+            &:hover {
+                color: gold;
+            }
+        }
+    }
+    
+    .btn {
+        display: block;
+        margin: 1em auto;
+    }
+}
