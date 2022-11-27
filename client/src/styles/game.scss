@@ -2,6 +2,7 @@
     position: fixed;
     width: 100%;
     height: 100%;
+    background-image: url("../../public/assets/backgrounds/field.background.png");
 }
 
 .Text {
@@ -18,31 +19,124 @@
 
 .Board {
     display: flex;
-    height: 70vh;
+    height: 50vh;
+    padding-top: 180px;
 
     .side {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
         width: 50%;
-        padding-right: 10vw;
+
+        &.left {
+            padding-left: 45vh;
+
+            .Character {
+                &:first-child:nth-last-child(1) {
+                    top: 25%;
+                }
+        
+                &:first-child:nth-last-child(2) {
+                    top: 5%;
+                    left: 15%;
+        
+                    & ~ .Character:nth-of-type(2) {
+                        top: 35%;
+                        right: 25%;
+                    }
+                }
+
+                &:first-child:nth-last-child(3) {
+                    left: 15%;
+
+                    & ~ .Character:nth-of-type(2) {
+                        top: 25%;
+                        right: 25%;
+                    }
+
+                    & ~ .Character:nth-of-type(3) {
+                        top: 50%;
+                        right: 60%;
+                    }
+                }
+        
+                &:first-child:nth-last-child(4) {
+                    left: 20%;
+        
+                    & ~ .Character:nth-of-type(2) {
+                        top: 20%;
+                        right: 15%;
+                    }
+        
+                    & ~ .Character:nth-of-type(3) {
+                        top: 43%;
+                        right: 50%;
+                    }
+        
+                    & ~ .Character:nth-of-type(4) {
+                        top: 65%;
+                        right: 80%
+                    }
+                }
+            }
+        }
+
+        &.right {
+            padding-right: 45vh;
+
+            .Character {
+                &:first-child:nth-last-child(1) {
+                    top: 25%;
+                }
+        
+                &:first-child:nth-last-child(2) {
+                    left: 45%;
+        
+                    & ~ .Character:nth-of-type(2) {
+                        top: 35%;
+                        left: 25%;
+                    }
+                }
+        
+                &:first-child:nth-last-child(3) {
+                    left: 45%;
+        
+                    & ~ .Character:nth-of-type(2) {
+                        top: 25%;
+                        left: 35%;
+                    }
+        
+                    & ~ .Character:nth-of-type(3) {
+                        top: 50%;
+                        left: 30%;
+                    }
+                }
+        
+                &:first-child:nth-last-child(4) {
+                    left: 45%;
+        
+                    & ~ .Character:nth-of-type(2) {
+                        top: 20%;
+                        left: 35%;
+                    }
+        
+                    & ~ .Character:nth-of-type(3) {
+                        top: 43%;
+                        left: 20%;
+                    }
+        
+                    & ~ .Character:nth-of-type(4) {
+                        top: 65%;
+                    }
+                }
+            }
+        }
     }
 
     .Character {
-        width: 9vw;
-        height: 9vw;
+        position: relative;
+        width: 12.9vh;
+        height: 12.9vh;
         background-color: rgb(230, 227, 238);
         cursor: pointer;
-
-        &:nth-child(1),
-        &:nth-child(3) {
-            align-self: center;
-        }
-
-        &:nth-child(2),
-        &:nth-child(4) {
-            align-self: end;
-        }
 
         &:hover {
             background-color: lighten(red, 17%);
@@ -55,8 +149,11 @@
 }
 
 .Menu {
+    position: absolute;
     display: flex;
-    height: 30vh;
+    width: 100%;
+    height: 25vh;
+    bottom: 0;
 
     .container {
         width: 50%;

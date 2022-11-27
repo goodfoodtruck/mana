@@ -20,7 +20,7 @@ const Board = (
     
     return (
         <div className="Board">
-            <div className="side">
+            <div className="left side">
                 {props.allies.map((ally) => (
                     <div
                         key={ally.id}
@@ -29,7 +29,7 @@ const Board = (
                     </div>
                 ))}
             </div>
-            <div className="side">
+            <div className="right side">
                 {props.enemies.map((enemy) => (
                     <div
                         key={enemy.id}
