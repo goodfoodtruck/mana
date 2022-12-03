@@ -20,112 +20,46 @@
 .Board {
     display: flex;
     height: 50vh;
-    padding-top: 180px;
+    padding-top: 170px;
 
     .side {
-        display: flex;
+        display: grid;
+        grid-template-rows: repeat(4, 25%);
+        grid-template-columns: repeat(4, 25%);
         width: 50%;
+        padding-inline: 12.5%;
 
-        &.left {
-            padding-left: 45vh;
-
-            .Character {
-                &:first-child:nth-last-child(1) {
-                    top: 25%;
-                }
-        
-                &:first-child:nth-last-child(2) {
-                    top: 5%;
-                    left: 15%;
-        
-                    & ~ .Character:nth-of-type(2) {
-                        top: 35%;
-                        right: 25%;
-                    }
-                }
-
-                &:first-child:nth-last-child(3) {
-                    left: 15%;
-
-                    & ~ .Character:nth-of-type(2) {
-                        top: 25%;
-                        right: 25%;
-                    }
-
-                    & ~ .Character:nth-of-type(3) {
-                        top: 50%;
-                        right: 60%;
-                    }
-                }
-        
-                &:first-child:nth-last-child(4) {
-                    left: 20%;
-        
-                    & ~ .Character:nth-of-type(2) {
-                        top: 20%;
-                        right: 15%;
-                    }
-        
-                    & ~ .Character:nth-of-type(3) {
-                        top: 43%;
-                        right: 50%;
-                    }
-        
-                    & ~ .Character:nth-of-type(4) {
-                        top: 65%;
-                        right: 80%
-                    }
+        .Character {
+            &:first-child:nth-last-child(1) {
+            }
+    
+            &:first-child:nth-last-child(2) {
+    
+                & ~ .Character:nth-of-type(2) {
                 }
             }
-        }
-
-        &.right {
-            padding-right: 45vh;
-
-            .Character {
-                &:first-child:nth-last-child(1) {
-                    top: 25%;
+    
+            &:first-child:nth-last-child(3) {
+    
+                & ~ .Character:nth-of-type(2) {
                 }
-        
-                &:first-child:nth-last-child(2) {
-                    left: 45%;
-        
-                    & ~ .Character:nth-of-type(2) {
-                        top: 35%;
-                        left: 25%;
-                    }
+    
+                & ~ .Character:nth-of-type(3) {
                 }
-        
-                &:first-child:nth-last-child(3) {
-                    left: 45%;
-        
-                    & ~ .Character:nth-of-type(2) {
-                        top: 25%;
-                        left: 35%;
-                    }
-        
-                    & ~ .Character:nth-of-type(3) {
-                        top: 50%;
-                        left: 30%;
-                    }
+            }
+    
+            &:first-child:nth-last-child(4) {
+    
+                & ~ .Character:nth-of-type(2) {
+                    z-index: 0;
                 }
-        
-                &:first-child:nth-last-child(4) {
-                    left: 45%;
-        
-                    & ~ .Character:nth-of-type(2) {
-                        top: 20%;
-                        left: 35%;
-                    }
-        
-                    & ~ .Character:nth-of-type(3) {
-                        top: 43%;
-                        left: 20%;
-                    }
-        
-                    & ~ .Character:nth-of-type(4) {
-                        top: 65%;
-                    }
+    
+                & ~ .Character:nth-of-type(3) {
+                    z-index: 2;
+                }
+    
+                & ~ .Character:nth-of-type(4) {
+                    z-index: 2;
                 }
             }
         }
@@ -133,10 +67,15 @@
 
     .Character {
         position: relative;
-        width: 12.9vh;
-        height: 12.9vh;
-        background-color: rgb(230, 227, 238);
         cursor: pointer;
+        z-index: 1;
+
+        img {
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+        }
 
         &:hover {
             background-color: lighten(red, 17%);

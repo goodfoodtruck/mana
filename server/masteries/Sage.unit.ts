@@ -3,7 +3,7 @@ import Unit from "../unit";
 
 export default class Sage extends Unit {
     constructor(id: string, socket?: Socket) {
-        super(id, socket)
+        super(id, {id: "Sage", category: "Small"}, socket)
         this._actions = ["Attack", "MindControl"]
     }
 

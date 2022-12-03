@@ -3,7 +3,7 @@ import Unit from "../unit";
 
 export default class Druid extends Unit {
     constructor(id: string, socket?: Socket) {
-        super(id, socket)
+        super(id, {id: "Druid", category: "Small"}, socket)
         this._actions = ["Attack", "Scratch"]
     }
 

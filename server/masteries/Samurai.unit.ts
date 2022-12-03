@@ -3,7 +3,7 @@ import Unit from "../unit";
 
 export default class Samurai extends Unit {
     constructor(id: string, socket?: Socket) {
-        super(id, socket)
+        super(id, {id: "Samurai", category: "Small"}, socket)
         this._actions = ["Attack", "Slash"]
     }
 

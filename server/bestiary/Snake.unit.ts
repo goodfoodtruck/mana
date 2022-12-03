@@ -2,7 +2,7 @@ import Unit from "../unit";
 
 export default class Snake extends Unit {
     constructor() {
-        super("Snake")
+        super("Snake", {id: "Snake", category: "Medium"})
         this._actions = ["Attack", "Fangs"]
     }
 

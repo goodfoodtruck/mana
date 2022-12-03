@@ -1,15 +1,22 @@
 import { Socket } from "socket.io"
 
+interface Sprite {
+    id: string,
+    category: "Small" | "Medium" | "Large"
+}
+
 export default class Unit {
     public _health: number
     public _id: string
     public socket?: Socket
     public _actions: Array<String> = ["Attack"]
+    public _sprite: Sprite
 
-    constructor(id: string, socket?: Socket) {
+    constructor(id: string, sprite: Sprite, socket?: Socket) {
         this._health = 100
         this._id = id
         this.socket = socket
+        this._sprite = sprite
     }
 
     public action(choice: string, target: Unit) {
@@ -50,7 +57,8 @@ export default class Unit {
     get info() {
         return {
             health: this._health,
-            id: this.id
+            id: this._id,
+            sprite: this._sprite
         }
     }
 }

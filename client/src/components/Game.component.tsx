@@ -4,6 +4,7 @@ import Text from './Text.component'
 import Board from './Board.component'
 import Menu from './Menu.component'
 import { useState } from 'react'
+import { placement } from '../functions/placement'
 
 const Game = (
     props: {
@@ -20,8 +21,8 @@ const Game = (
     })
 
     props.socket.on("game-info", (data: {allies: Array<Unit>, enemies: Array<Unit>}) => {
-        setAllies(data.allies)
-        setEnemies(data.enemies)
+        setAllies(placement(data.allies))
+        setEnemies(placement(data.enemies))
     })
 
     return (
