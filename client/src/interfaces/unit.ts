@@ -7,6 +7,7 @@ export interface Unit {
     },
     position: {
         x: number,
-        y: number
+        y: number,
+        z: number
     }
 }

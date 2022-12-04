@@ -20,25 +20,25 @@ const Board = (
 
     return (
         <div className="Board">
-            <div className="side">
-                {props.allies.map((ally, idx) => (
+            <div className="side left">
+                {props.allies.map((character, idx) => (
                     <div
-                        key={ally.id + idx}
-                        className={choice === ally.id + idx ? "Character active" : "Character"}
-                        style={{gridColumn: ally.position.x, gridRow: ally.position.y}}
-                        onClick={() => choose(ally.id + idx)}>
-                            <img src={`/assets/img/${ally.sprite.id}.sprite.png`} alt={ally.id} />
+                        key={character.id + idx}
+                        className={choice === character.id + idx ? "Character active" : "Character"}
+                        style={{gridColumn: character.position.x, gridRow: character.position.y, zIndex: character.position.z}}
+                        onClick={() => choose(character.id + idx)}>
+                            <img src={`/assets/img/${character.sprite.id}.sprite.png`} alt={character.id} />
                     </div>
                 ))}
             </div>
-            <div className="side">
-                {props.enemies.map((enemy, idx) => (
+            <div className="side right">
+                {props.enemies.map((character, idx) => (
                     <div
-                    key={enemy.id + idx}
-                        className={choice === enemy.id + idx ? "Character active" : "Character"}
-                        style={{gridColumn: enemy.position.x, gridRow: enemy.position.y}}
-                        onClick={() => choose(enemy.id + idx)}>
-                            <img src={`/assets/img/${enemy.sprite.id}.sprite.png`} alt={enemy.id} />
+                    key={character.id + idx}
+                        className={choice === character.id + idx ? "Character active" : "Character"}
+                        style={{gridColumn: character.position.x, gridRow: character.position.y, zIndex: character.position.z}}
+                        onClick={() => choose(character.id + idx)}>
+                            <img src={`/assets/img/${character.sprite.id}.sprite.png`} alt={character.id} />
                     </div>
                 ))}
             </div>
