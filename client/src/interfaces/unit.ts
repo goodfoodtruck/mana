@@ -1,6 +1,7 @@
 export interface Unit {
-    health: number,
+    name: string,
     id: string,
+    health: number,
     sprite: {
         id: string,
         category: "Small" | "Medium" | "Large"

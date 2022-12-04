@@ -6,15 +6,18 @@ interface Sprite {
 }
 
 export default class Unit {
-    public _health: number
-    public _id: string
+    private _name: string
+    private _health: number
+    private _id: string
     public socket?: Socket
-    public _actions: Array<String> = ["Attack"]
-    public _sprite: Sprite
+    protected _actions: Array<String> = ["Attack"]
+    private _sprite: Sprite
+    private _position = {x: 0, y: 0, z: 0}
 
-    constructor(id: string, sprite: Sprite, socket?: Socket) {
+    constructor(name: string, sprite: Sprite, socket?: Socket) {
+        this._name = name
+        this._id = name + "#" + Math.floor(Math.random() * 100)
         this._health = 100
-        this._id = id
         this.socket = socket
         this._sprite = sprite
     }
@@ -37,6 +40,10 @@ export default class Unit {
         this._health -= damage
         if (this._health < 0) this._health = 0 
     }
+
+    get name() {
+        return this._name
+    }
     
     get health() {
         return this._health
@@ -54,11 +61,29 @@ export default class Unit {
         return this._actions
     }
 
+    get sprite() {
+        return this._sprite
+    }
+
+    get position() {
+        return this._position
+    }
+
+    set position(position: {x: number, y: number, z: number}) {
+        this._position = {
+            x: position.x,
+            y: position.y,
+            z: position.z
+        }
+    }
+
     get info() {
         return {
-            health: this._health,
+            name: this._name,
             id: this._id,
-            sprite: this._sprite
+            health: this._health,
+            sprite: this._sprite,
+            position: this._position
         }
     }
 }

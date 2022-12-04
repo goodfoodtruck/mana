@@ -1,22 +1,22 @@
 import { Socket } from "socket.io";
 import Unit from "../unit";
 
-export default class Samurai extends Unit {
-    constructor(id: string, socket?: Socket) {
-        super(id, {id: "Samurai", category: "Small"}, socket)
-        this._actions = ["Attack", "Slash"]
+export default class Druid extends Unit {
+    constructor(name: string, socket?: Socket) {
+        super(name, {id: "Druid", category: "Small"}, socket)
+        this._actions = ["Attack", "Scratch"]
     }
 
     action(choice: string, target: Unit) {
         switch(choice) {
             case "Attack":
                 return this.attack(target)
-            case "Slash":
-                return this.Slash(target)
+            case "Scratch":
+                return this.Scratch(target)
         }
     }
 
-    Slash(target: Unit) {
+    Scratch(target: Unit) {
         const damage = 50
         target.receiveDamage(damage)
         return damage

@@ -21,23 +21,23 @@ const Board = (
     return (
         <div className="Board">
             <div className="side left">
-                {props.allies.map((character, idx) => (
+                {props.allies.map(character => (
                     <div
-                        key={character.id + idx}
-                        className={choice === character.id + idx ? "Character active" : "Character"}
+                        key={character.id}
+                        className={choice === character.id ? "Character active" : "Character"}
                         style={{gridColumn: character.position.x, gridRow: character.position.y, zIndex: character.position.z}}
-                        onClick={() => choose(character.id + idx)}>
+                        onClick={() => choose(character.id)}>
                             <img src={`/assets/img/${character.sprite.id}.sprite.png`} alt={character.id} />
                     </div>
                 ))}
             </div>
             <div className="side right">
-                {props.enemies.map((character, idx) => (
+                {props.enemies.map(character => (
                     <div
-                    key={character.id + idx}
-                        className={choice === character.id + idx ? "Character active" : "Character"}
+                    key={character.id}
+                        className={choice === character.id ? "Character active" : "Character"}
                         style={{gridColumn: character.position.x, gridRow: character.position.y, zIndex: character.position.z}}
-                        onClick={() => choose(character.id + idx)}>
+                        onClick={() => choose(character.id)}>
                             <img src={`/assets/img/${character.sprite.id}.sprite.png`} alt={character.id} />
                     </div>
                 ))}

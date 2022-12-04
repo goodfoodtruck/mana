@@ -1,11 +1,11 @@
 import { Namespace, Server, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import Game from "./game"
-import Unit from "./unit"
-import Guardian from "./masteries/Guardian.unit"
-import Samurai from "./masteries/Samurai.unit"
-import Sage from "./masteries/Sage.unit"
-import Druid from "./masteries/Druid.unit"
+import Unit from "./characters/unit"
+import Guardian from "./characters/masteries/Guardian.unit"
+import Samurai from "./characters/masteries/Samurai.unit"
+import Sage from "./characters/masteries/Sage.unit"
+import Druid from "./characters/masteries/Druid.unit"
 
 let parties: Array<Party> = []
 
@@ -37,7 +37,7 @@ export default class Party {
 
     private socketEvents(name:string, mastery: string, socket: Socket) {
         this.add(name, mastery, socket)
-        this.io.emit("party-info", this.participants.map(participant => participant.id))
+        this.io.emit("party-info", this.participants.map(participant => participant.name))
 
         socket.on("launch-game", () => {
             this.isOpen = false

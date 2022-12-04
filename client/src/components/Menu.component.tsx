@@ -43,7 +43,7 @@ const Menu = (
             <div className="container">
                 <div className="status">
                     {props.allies.map(ally => (
-                        <PlayerStatus key={ally.id} player={ally} />
+                        <PlayerStatus key={ally.name} player={ally} />
                     ))}
                 </div>
             </div>

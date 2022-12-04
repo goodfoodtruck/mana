@@ -1,6 +1,13 @@
-import { httpServer } from "./server"
+import express from 'express'
+import { createServer } from 'http'
+import cors from 'cors'
 import { Server } from "socket.io"
-import { manageParty } from "./party"
+import { manageParty } from "./lib/party"
+
+const app = express()
+app.use(cors())
+
+const httpServer = createServer(app)
 
 const io = new Server(httpServer, {
     cors: {
