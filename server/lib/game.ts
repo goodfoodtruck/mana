@@ -56,6 +56,7 @@ export default class Game {
     private async Action(choice: string, target: Unit) {
         const damage = this.player.action(choice, target)
         if (target.health > 0) {
+            this.io.emit("anim-damage", {id: target.id, damage: damage})
             this.io.emit("message", `${this.player.name} deals ${damage} to ${target.name}`)
         } else {
             this.io.emit("message", `${target.name} is dead`)
@@ -85,7 +86,7 @@ export default class Game {
         const playerPlace = this.order.indexOf(this.player)
         playerPlace === (this.order.length - 1) ? this.player = this.order[0] : this.player = this.order[playerPlace + 1]
         
-        setTimeout(() => this.Round(), 500)
+        setTimeout(() => this.Round(), 600)
     }
 
     private async Update() {

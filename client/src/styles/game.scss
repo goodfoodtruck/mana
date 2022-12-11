@@ -31,7 +31,7 @@
 
         &.left {
             img {
-                transform: rotateY(180deg)
+                transform: rotateY(180deg) translateX(50%);
             }
         }
     }
@@ -56,6 +56,38 @@
         &.active {
             img {
                 filter: drop-shadow(-3px -3px 0 rgb(177, 0, 0)) drop-shadow(3px 3px 0 rgb(177, 0, 0));
+            }
+        }
+
+        .Damage {
+            position: absolute;
+            left: 40%;
+            z-index: 4;
+            font-size: 1.1em;
+            text-shadow: 
+                0px 0px 6px black,
+                0px 0px 6px black,
+                0px 0px 6px black,
+                0px 0px 6px black,
+                0px 0px 6px black;
+            opacity: 0;
+            
+            &[data-animation='1'] {
+                animation: receiveDamage 0.5s ease-out;
+            }
+
+            @keyframes receiveDamage {
+                0% {
+                    opacity: 1;
+                    bottom: 60%;
+                }
+                20% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 0;
+                    bottom: 150%;
+                }
             }
         }
     }

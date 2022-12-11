@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Socket } from 'socket.io-client'
 import { Unit } from '../interfaces/unit'
+import Character from './Character.component'
 
 const Board = (
     props: {
@@ -21,25 +22,25 @@ const Board = (
     return (
         <div className="Board">
             <div className="side left">
-                {props.allies.map(character => (
-                    <div
-                        key={character.id}
-                        className={choice === character.id ? "Character active" : "Character"}
-                        style={{gridColumn: character.position.x, gridRow: character.position.y, zIndex: character.position.z}}
-                        onClick={() => choose(character.id)}>
-                            <img src={`/assets/img/${character.sprite.id}.sprite.png`} alt={character.id} />
-                    </div>
+                {props.allies.map((character, index) => (
+                    <Character
+                        key={index}
+                        character={character}
+                        socket={props.socket}
+                        choice={choice}
+                        choose={(id: string) => choose(id)}
+                    />
                 ))}
             </div>
             <div className="side right">
-                {props.enemies.map(character => (
-                    <div
-                    key={character.id}
-                        className={choice === character.id ? "Character active" : "Character"}
-                        style={{gridColumn: character.position.x, gridRow: character.position.y, zIndex: character.position.z}}
-                        onClick={() => choose(character.id)}>
-                            <img src={`/assets/img/${character.sprite.id}.sprite.png`} alt={character.id} />
-                    </div>
+                {props.enemies.map((character, index) => (
+                    <Character
+                        key={index}
+                        character={character}
+                        socket={props.socket}
+                        choice={choice}
+                        choose={(id: string) => choose(id)}
+                    />
                 ))}
             </div>
         </div>

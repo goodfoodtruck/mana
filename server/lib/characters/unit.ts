@@ -16,7 +16,7 @@ export default class Unit {
 
     constructor(name: string, sprite: Sprite, socket?: Socket) {
         this._name = name
-        this._id = name + "#" + Math.floor(Math.random() * 100)
+        this._id = name + "#" + Math.floor(Math.random() * 1000)
         this._health = 100
         this.socket = socket
         this._sprite = sprite
@@ -31,14 +31,14 @@ export default class Unit {
     
     attack(target: Unit) {
         // const damage = Math.floor(Math.random() * 5)
-        const damage = 50
+        const damage = 1
         target.receiveDamage(damage)
         return damage
     }
     
     receiveDamage(damage: number) {
         this._health -= damage
-        if (this._health < 0) this._health = 0 
+        if (this._health < 0) this._health = 0
     }
 
     get name() {
