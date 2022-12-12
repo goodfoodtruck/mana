@@ -45,6 +45,13 @@
             left: 50%;
             bottom: 0;
             transform: translateX(-50%);
+
+            &[data-animation='1'] {
+                animation-name: receiveHit;
+                animation-iteration-count: 2;
+                animation-duration: 0.2s;
+                animation-direction: normal;
+            }
         }
 
         &:hover {
@@ -75,19 +82,37 @@
             &[data-animation='1'] {
                 animation: receiveDamage 0.5s ease-out;
             }
+        }
 
-            @keyframes receiveDamage {
-                0% {
-                    opacity: 1;
-                    bottom: 60%;
-                }
-                20% {
-                    opacity: 1;
-                }
-                100% {
-                    opacity: 0;
-                    bottom: 150%;
-                }
+        @keyframes receiveDamage {
+            0% {
+                opacity: 1;
+                bottom: 60%;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                bottom: 150%;
+            }
+        }
+
+        @keyframes receiveHit {
+            0% {
+                filter: brightness(0);
+            }
+            25% {
+                filter: invert(1) grayscale(1);
+            }
+            50% {
+                filter: none;
+            }
+            75% {
+                filter: invert(1) grayscale(1);
+            }
+            100% {
+                filter: none;
             }
         }
     }

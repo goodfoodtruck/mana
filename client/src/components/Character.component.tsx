@@ -25,7 +25,7 @@ const Character = (
             className={props.choice === props.character.id ? "Character active" : "Character"}
             style={{gridColumn: props.character.position.x, gridRow: props.character.position.y, zIndex: props.character.position.z}}
             onClick={() => props.choose(props.character.id)}>
-                <img src={`/assets/img/${props.character.sprite.id}.sprite.png`} alt={props.character.id} />
+                <img src={`/assets/img/${props.character.sprite.id}.sprite.png`} data-animation={animation} alt={props.character.id} />
                 <span className="Damage" onAnimationEnd={() => setAnimation(0)} data-animation={animation}>{damage}</span>
         </div>
     )
