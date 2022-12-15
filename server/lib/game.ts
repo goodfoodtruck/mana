@@ -1,5 +1,6 @@
 import { Namespace } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
+import { setTimeout } from "timers/promises"
 import Party from "./party"
 import Unit from "./characters/unit"
 import Bestiary from "./characters/bestiary"
@@ -31,7 +32,8 @@ export default class Game {
 
     public async Start() {
         await this.Update()
-        this.io.emit("actions-info", this.player.actions, () => {
+        this.io.emit("actions-info", this.player.actions, async () => {
+            await setTimeout(1500)
             return this.Round()
         })
     }
@@ -44,23 +46,26 @@ export default class Game {
         if (this.player.socket) {
             this.player.socket.emit("turn-state", true)
             this.player.socket.once("press", (data: {choice: string, target: string}) => {
-                this.order.forEach(unit => {
+                this.io.emit("message", `${this.player.name} uses ${data.choice} !`)
+                this.order.forEach(async unit => {
+                    await setTimeout(2000)
                     if (data.target === unit.id) return this.Action(data.choice, unit)
                 })
             })
         } else {
+            this.io.emit("attack-message", `${this.player.name} uses Attack`)
+            await setTimeout(500)
             return this.Action("Attack", this.allies[Math.floor(Math.random() * this.allies.length)])
         }
     }
     
     private async Action(choice: string, target: Unit) {
         const damage = this.player.action(choice, target)
-        if (target.health > 0) {
-            this.io.emit("anim-damage", {id: target.id, damage: damage})
-            this.io.emit("message", `${this.player.name} deals ${damage} to ${target.name}`)
-        } else {
+        this.io.emit("anim-damage", {id: target.id, damage: damage})
+        await setTimeout(500)
+        if (target.health <= 0) {
             this.io.emit("message", `${target.name} is dead`)
-            this.order = this.order.filter(player => target !== player)
+            this.order = this.order.filter(unit => target !== unit)
 
             this.allies.map(ally => {
                 if (ally.id === target.id) this.allies = this.allies.filter(ally => target !== ally)
@@ -71,22 +76,26 @@ export default class Game {
             })
 
             if (this.enemies.length === 0) {
+                await this.Update()
+                await setTimeout(1000)
                 return this.party.endGame(true)
             }
             
             if (this.allies.length === 0) {
+                await this.Update()
+                await setTimeout(1000)
                 return this.party.endGame(false)
             }
         }
         await this.Update()
+        await setTimeout(1000)
         return this.Turn()
     }
 
     private Turn() {
         const playerPlace = this.order.indexOf(this.player)
         playerPlace === (this.order.length - 1) ? this.player = this.order[0] : this.player = this.order[playerPlace + 1]
-        
-        setTimeout(() => this.Round(), 600)
+        this.Round()
     }
 
     private async Update() {
