@@ -7,17 +7,35 @@ const Board = (
     props: {
         socket: Socket,
         allies: Array<Unit>,
-        enemies: Array<Unit>,
-        target: String,
-        setTarget: (target: string) => void
+        enemies: Array<Unit>
     }) => {
         
-    const [choice, setChoice] = useState(String)
+    const [choices, setChoices] = useState(Array<String>)
+    const [choosing, setChoosing] = useState(false)
+    const [targetsNeeded, setTargetsNeeded] = useState(Number)
 
-    const choose = (target: string) => {
-        target === choice ? setChoice("") : setChoice(target)
-        target === props.target ? props.setTarget("") : props.setTarget(target)
+    const choose = (id: string) => {
+        if (choosing) {
+            if (choices.length < targetsNeeded) {
+                setChoices(choices => [...choices, id])
+            } else if (choices.length === targetsNeeded) {
+                setChoices(choices => [...choices.splice(0, 1), id])
+            } else {
+                setChoices(choices => choices.filter(choice => choice !== id))
+            }
+        }
     }
+
+    const confirmChoices = () => {
+        props.socket.emit("turn-target-selected", choices)
+        setChoosing(false)
+        setChoices([])
+    }
+
+    props.socket.once("turn-target", (targetting: number) => {
+        setTargetsNeeded(targetting)
+        setChoosing(true)
+    })
 
     return (
         <div className="Board">
@@ -27,7 +45,8 @@ const Board = (
                         key={index}
                         character={character}
                         socket={props.socket}
-                        choice={choice}
+                        choices={choices}
+                        choosing={choosing}
                         choose={(id: string) => choose(id)}
                     />
                 ))}
@@ -38,11 +57,17 @@ const Board = (
                         key={index}
                         character={character}
                         socket={props.socket}
-                        choice={choice}
+                        choices={choices}
+                        choosing={choosing}
                         choose={(id: string) => choose(id)}
                     />
                 ))}
             </div>
+            {choosing && <div className="Choice">
+                <div className="container dark">
+                    <button className="btn error" onClick={() => confirmChoices()}>Lock selection</button>
+                </div>
+            </div>}
         </div>
     )
 }

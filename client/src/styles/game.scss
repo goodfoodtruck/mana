@@ -36,6 +36,13 @@
         }
     }
 
+    .Choice {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
     .Character {
         position: relative;
         cursor: pointer;
@@ -53,16 +60,25 @@
                 animation-direction: normal;
             }
         }
+        
+        &.choosing {
 
-        &:hover {
-            img {
-                filter: drop-shadow(-2px -2px 0 rgba(255, 17, 17, 0.575)) drop-shadow(2px 2px 0 rgba(255, 17, 17, 0.575));
+            &:hover {
+                img {
+                    filter: drop-shadow(-2px -2px 0 rgba(255, 17, 17, 0.575)) drop-shadow(2px 2px 0 rgba(255, 17, 17, 0.575));
+                }
             }
         }
 
-        &.active {
+        &.chosen {
             img {
                 filter: drop-shadow(-3px -3px 0 rgb(177, 0, 0)) drop-shadow(3px 3px 0 rgb(177, 0, 0));
+            }
+
+            &:hover {
+                img {
+                    filter: drop-shadow(-3px -3px 0 rgb(177, 0, 0)) drop-shadow(3px 3px 0 rgb(177, 0, 0));
+                }
             }
         }
 

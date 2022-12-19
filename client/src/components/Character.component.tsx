@@ -6,7 +6,8 @@ const Character = (
     props: {
         character: Unit,
         socket: Socket,
-        choice: string,
+        choices: Array<String>,
+        choosing: Boolean,
         choose: (id: string) => void 
     }) => {
 
@@ -22,7 +23,7 @@ const Character = (
 
     return (
         <div
-            className={props.choice === props.character.id ? "Character active" : "Character"}
+            className={`Character ${props.choosing && "choosing"} ${props.choices.includes(props.character.id) && "chosen"}`}
             style={{gridColumn: props.character.position.x, gridRow: props.character.position.y, zIndex: props.character.position.z}}
             onClick={() => props.choose(props.character.id)}>
                 <img src={`/assets/img/${props.character.sprite.id}.sprite.png`} data-animation={animation} alt={props.character.id} />

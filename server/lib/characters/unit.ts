@@ -1,4 +1,9 @@
-import { Socket } from "socket.io"
+import { Namespace, Socket } from "socket.io"
+import { DefaultEventsMap } from "socket.io/dist/typed-events"
+import { Action } from "./actions/action"
+import { Status } from "./status/status"
+import { HitAction } from "./actions/Hit.action"
+import { PoisonStatus } from "./status/Poison.status"
 
 interface Sprite {
     id: string,
@@ -8,37 +13,67 @@ interface Sprite {
 export default class Unit {
     private _name: string
     private _health: number
+    private _maxHealth: number
     private _id: string
     public socket?: Socket
-    protected _actions: Array<String> = ["Attack"]
+    protected _actions: Array<Action>
+    private _status: Array<Status>
     private _sprite: Sprite
     private _position = {x: 0, y: 0, z: 0}
 
     constructor(name: string, sprite: Sprite, socket?: Socket) {
         this._name = name
         this._id = name + "#" + Math.floor(Math.random() * 1000)
-        this._health = 100
+        this._maxHealth = 100
+        this._health = this._maxHealth
         this.socket = socket
         this._sprite = sprite
+        this._actions = [HitAction]
+        this._status = [PoisonStatus]
     }
 
-    public action(choice: string, target: Unit) {
-        switch(choice) {
-            case "Attack":
-                return this.attack(target)
-        }
+    public async doAction(io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, chosenAction: Action, targets: Array<Unit>) {
+        this._actions.map(action => {
+            if (chosenAction === action && action.factor) {
+                action.method(io, action.factor, targets)
+            }
+        })
     }
     
-    attack(target: Unit) {
-        // const damage = Math.floor(Math.random() * 5)
-        const damage = 1
-        target.receiveDamage(damage)
-        return damage
-    }
-    
-    receiveDamage(damage: number) {
+    public receiveDamage(damage: number) {
         this._health -= damage
         if (this._health < 0) this._health = 0
+    }
+
+    public receiveHealing(healing: number) {
+        this._health += healing
+        if (this._health >= this._maxHealth) this._health = this._maxHealth
+    }
+
+    public receiveStatus(status: Status) {
+        this._status.push(status)
+    }
+
+    public removeStatus(status: Status) {
+        if (this._status.includes(status)) this._status = this._status.filter(statusElem => statusElem !== status)
+    }
+
+    set position(position: {x: number, y: number, z: number}) {
+        this._position = {
+            x: position.x,
+            y: position.y,
+            z: position.z
+        }
+    }
+
+    get info() {
+        return {
+            name: this._name,
+            id: this._id,
+            health: this._health,
+            sprite: this._sprite,
+            position: this._position
+        }
     }
 
     get name() {
@@ -61,6 +96,10 @@ export default class Unit {
         return this._actions
     }
 
+    get status() {
+        return this._status
+    }
+
     get sprite() {
         return this._sprite
     }
@@ -69,21 +108,4 @@ export default class Unit {
         return this._position
     }
 
-    set position(position: {x: number, y: number, z: number}) {
-        this._position = {
-            x: position.x,
-            y: position.y,
-            z: position.z
-        }
-    }
-
-    get info() {
-        return {
-            name: this._name,
-            id: this._id,
-            health: this._health,
-            sprite: this._sprite,
-            position: this._position
-        }
-    }
 }

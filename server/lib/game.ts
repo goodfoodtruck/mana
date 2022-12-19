@@ -3,6 +3,7 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import { setTimeout } from "timers/promises"
 import Party from "./party"
 import Unit from "./characters/unit"
+import { Action } from "./characters/actions/action"
 import Bestiary from "./characters/bestiary"
 
 export default class Game {
@@ -39,55 +40,46 @@ export default class Game {
     }
 
     private async Round() {
+        var action: Action
+        var targets: Array<Unit> = []
+
         await this.Update()
         this.io.emit("turn-state", false)
         this.io.emit("message", `It's ${this.player.name}'s turn`)
 
         if (this.player.socket) {
             this.player.socket.emit("turn-state", true)
-            this.player.socket.once("press", (data: {choice: string, target: string}) => {
-                this.io.emit("message", `${this.player.name} uses ${data.choice} !`)
-                this.order.forEach(async unit => {
-                    await setTimeout(2000)
-                    if (data.target === unit.id) return this.Action(data.choice, unit)
+            this.player.socket.once("turn-action", (receivedAction: Action) => {
+                this.player.actions.map(actionElem => {
+                    if (receivedAction.name === actionElem.name) action = actionElem
+                })
+                this.player.socket!.emit("turn-target", action.targets)
+                this.player.socket!.once("turn-target-selected", async (receivedTargetsID: Array<String>) => {
+                    this.order.map(unit => {
+                        if (receivedTargetsID.includes(unit.id)) targets.push(unit)
+                    })
+                    return this.Action(action, targets)
                 })
             })
         } else {
-            this.io.emit("attack-message", `${this.player.name} uses Attack`)
-            await setTimeout(500)
-            return this.Action("Attack", this.allies[Math.floor(Math.random() * this.allies.length)])
+            return this.Action(this.player.actions[0], [this.allies[Math.floor(Math.random() * this.allies.length)]])
         }
     }
-    
-    private async Action(choice: string, target: Unit) {
-        const damage = this.player.action(choice, target)
-        this.io.emit("anim-damage", {id: target.id, damage: damage})
+
+    private async Action(chosenAction: Action, targets: Array<Unit>) {
+        this.io.emit("message", `${this.player.name} uses ${chosenAction.name} !`)
         await setTimeout(500)
-        if (target.health <= 0) {
-            this.io.emit("message", `${target.name} is dead`)
-            this.order = this.order.filter(unit => target !== unit)
 
-            this.allies.map(ally => {
-                if (ally.id === target.id) this.allies = this.allies.filter(ally => target !== ally)
-            })
-
-            this.enemies.map(enemy => {
-                if (enemy.id === target.id) this.enemies = this.enemies.filter(enemy => target !== enemy)
-            })
-
-            if (this.enemies.length === 0) {
-                await this.Update()
-                await setTimeout(1000)
-                return this.party.endGame(true)
-            }
-            
-            if (this.allies.length === 0) {
-                await this.Update()
-                await setTimeout(1000)
-                return this.party.endGame(false)
-            }
-        }
+        await this.player.doAction(this.io, chosenAction, targets)
         await this.Update()
+        await setTimeout(1000)
+        
+        this.player.status.map(async statusElem => {
+            if (statusElem.effect) {
+                statusElem.effect(this.io, statusElem.factor, [this.player])
+            }
+        })
+
         await setTimeout(1000)
         return this.Turn()
     }
@@ -99,6 +91,33 @@ export default class Game {
     }
 
     private async Update() {
+        this.order.map(async unit => {
+            if (unit.health <= 0) {
+                this.io.emit("message", `${unit.name} is dead`)
+                this.order = this.order.filter(unitElem => unitElem !== unit)
+    
+                this.allies.map(ally => {
+                    if (ally.id === unit.id) this.allies = this.allies.filter(ally => unit !== ally)
+                })
+    
+                this.enemies.map(enemy => {
+                    if (enemy.id === unit.id) this.enemies = this.enemies.filter(enemy => unit !== enemy)
+                })
+    
+                if (this.enemies.length === 0) {
+                    await this.Update()
+                    await setTimeout(1000)
+                    return this.party.endGame(true)
+                }
+                
+                if (this.allies.length === 0) {
+                    await this.Update()
+                    await setTimeout(1000)
+                    return this.party.endGame(false)
+                }
+            }
+        })
+
         this.io.emit("game-info", {
             allies: this.allies.map(ally => ally.info),
             enemies: this.enemies.map(enemy => enemy.info)

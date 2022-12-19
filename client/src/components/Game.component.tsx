@@ -13,7 +13,6 @@ const Game = (
 
     const [allies, setAllies] = useState(Array<Unit>)
     const [enemies, setEnemies] = useState(Array<Unit>)
-    const [target, setTarget] = useState(String)
 
     props.socket.on("end-game", () => {
         props.setInGame(false)
@@ -31,13 +30,10 @@ const Game = (
                 socket={props.socket}
                 allies={allies}
                 enemies={enemies}
-                target={target}
-                setTarget={(target: string) => setTarget(target)}
             />
             <Menu
                 socket={props.socket}
                 allies={allies}
-                target={target}
             />
         </div>
     )

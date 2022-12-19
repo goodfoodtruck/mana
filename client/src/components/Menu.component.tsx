@@ -2,31 +2,27 @@ import { useState } from "react"
 import { Socket } from "socket.io-client"
 import PlayerStatus from "./PlayerStatus.component"
 import { Unit } from "../interfaces/unit"
+import { Action } from "../interfaces/action"
 
 const Menu = (
     props: {
         socket: Socket,
-        allies: Array<Unit>,
-        target: string
+        allies: Array<Unit>
     }) => {
     const [isMyTurn, setIsMyTurn] = useState(false)
-    const [actions, setActions] = useState(Array<string>)
+    const [actions, setActions] = useState(Array<Action>)
 
-    const pressButton = (action: string) => {
-        if (isMyTurn && props.target) {
-            props.socket.emit("press", {choice: action, target: props.target})
+    const pressButton = (action: Action) => {
+        if (isMyTurn) {
+            props.socket.emit("turn-action", action)
         }
     }
 
     props.socket.on("turn-state", (myTurn: boolean) => {
-        if (myTurn) {
-            setIsMyTurn(true)
-        } else {
-            setIsMyTurn(false)
-        }
+        myTurn ? setIsMyTurn(true) : setIsMyTurn(false)
     })
 
-    props.socket.on("actions-info", (actions: string[]) => {
+    props.socket.on("actions-info", (actions: Array<Action>) => {
         setActions(actions)
     })
 
@@ -35,7 +31,7 @@ const Menu = (
             <div className="container">
                 <div className="actions">
                     {isMyTurn && actions.map(action => (
-                        <button key={action} className="btn success" onClick={() => pressButton(action)}>{action}</button>
+                        <button key={action.name} className="btn success" onClick={() => pressButton(action)}>{action.name}</button>
                     ))}
                     {!isMyTurn && <div>Wait for your round</div>}
                 </div>
