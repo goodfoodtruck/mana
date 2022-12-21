@@ -1,7 +1,7 @@
 import { Namespace, Server, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import Game from "./game"
-import Unit from "./characters/unit"
+import { Unit } from "./characters/unit"
 import Guardian from "./characters/masteries/Guardian.unit"
 import Samurai from "./characters/masteries/Samurai.unit"
 import Sage from "./characters/masteries/Sage.unit"

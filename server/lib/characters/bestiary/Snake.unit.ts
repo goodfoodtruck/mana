@@ -1,4 +1,4 @@
-import Unit from "../unit";
+import { Unit } from "../unit";
 
 export default class Snake extends Unit {
     constructor() {

@@ -1,4 +1,4 @@
-import Unit from "../unit";
+import { Unit } from "../unit";
 
 export default class Bug extends Unit {
     constructor() {

@@ -1,10 +1,22 @@
-import { Namespace } from "socket.io"
-import { DefaultEventsMap } from "socket.io/dist/typed-events"
-import Unit from "../unit"
+import { Attack, Heal } from "../actions/action"
+import { Unit } from "../unit"
 
-export interface Status {
+export type Status<Method extends "Action" | "Effect"> = {
     name: string
     factor: number
-    effect?: (io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, factor: number, targets: Array<Unit>, turns?: number) => void
-    turns: number | { permanent: true }
+    method: StatusMethod<Method>
+    duration?: number
 }
+
+type StatusMethod<Method extends "Action" | "Effect"> = Method extends "Action"
+    ? typeof Attack | typeof Heal
+    : typeof AttackBonus | typeof ArmorBonus
+
+export const AttackBonus = (target: Unit, factor: number) => {
+    target.attackBonus = factor
+}
+
+export const ArmorBonus = (target: Unit, factor: number) => {
+    target.armorBonus = factor
+}
+

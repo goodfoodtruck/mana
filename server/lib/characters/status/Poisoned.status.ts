@@ -1,9 +1,9 @@
 import { Attack } from "../actions/action";
 import { Status } from "./status";
 
-export const PoisonStatus: Status = {
+export var PoisonedStatus: Status<"Action"> = {
     name: "Poison",
     factor: 3,
-    effect: Attack,
-    turns: { permanent: true }
+    method: Attack,
+    duration: 2
 }

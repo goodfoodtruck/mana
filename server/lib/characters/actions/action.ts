@@ -1,25 +1,24 @@
 import { Namespace } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import Unit from "../unit";
-import { Status } from "../status/status";
+import { Unit, Bonuses } from "../unit";
+
 
 export interface Action {
     name: string
     factor?: number
-    status?: Status
     targets: number
-    method: (io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, factor: number, targets: Array<Unit>) => void
+    method: (io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, factor: number, targets: Array<Unit>, bonuses?: Bonuses) => void
 }
 
-export const Attack = (io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, factor: number, targets: Array<Unit>) => {
-    const damage = 1 * factor
+export const Attack = (io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, factor: number, targets: Array<Unit>, bonuses?: Bonuses) => {
+    const damage = 1 * factor + (bonuses ? bonuses.attack : 0)
     targets.map(target => {
         target.receiveDamage(damage)
         io.emit("anim-damage", {id: target.id, damage: damage})
     })
 }
 
-export const Heal = (io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, factor: number, targets: Array<Unit>) => {
+export const Heal = (io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, factor: number, targets: Array<Unit>, bonuses?: Bonuses) => {
     const healing = 1 * factor
     targets.map(target => {
         target.receiveHealing(healing)

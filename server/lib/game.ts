@@ -2,7 +2,7 @@ import { Namespace } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import { setTimeout } from "timers/promises"
 import Party from "./party"
-import Unit from "./characters/unit"
+import { Unit } from "./characters/unit"
 import { Action } from "./characters/actions/action"
 import Bestiary from "./characters/bestiary"
 
@@ -72,15 +72,21 @@ export default class Game {
 
         await this.player.doAction(this.io, chosenAction, targets)
         await this.Update()
-        await setTimeout(1000)
-        
-        this.player.status.map(async statusElem => {
-            if (statusElem.effect) {
-                statusElem.effect(this.io, statusElem.factor, [this.player])
+
+        this.player.statusActions.map(statusAction => {
+            if (statusAction.duration) {
+                statusAction.duration -= 1
+                if (statusAction.duration <= 0) this.player.removeStatusAction(statusAction)
             }
         })
-
+        this.player.statusEffects.map(statusEffect => {
+            if (statusEffect.duration) {
+                statusEffect.duration -= 1
+                if (statusEffect.duration <= 0) this.player.removeStatusEffect(statusEffect)
+            }
+        })
         await setTimeout(1000)
+
         return this.Turn()
     }
 
