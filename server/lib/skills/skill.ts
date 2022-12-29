@@ -24,7 +24,7 @@ export class AttackSkill extends Skill {
     useSkill = (io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, targets: Array<Unit>, actor?: Unit, status?: Status) => {
         this.damageOrHealing! += (actor?.attackBonus ? actor.attackBonus : 0)
         targets.map(target => {
-            io.emit(this.event, {id: target.id, damageOrHealing: this.damageOrHealing})
+            io.emit(this.event, {id: target.id, damage: this.damageOrHealing})
             target.receiveDamage(this.damageOrHealing!)
         })
     }
@@ -34,7 +34,7 @@ export class HealSkill extends Skill {
     event = "anim-heal"
     useSkill = (io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, targets: Array<Unit>, actor?: Unit, status?: Status) => {
         targets.map(target => {
-            io.emit(this.event, {target: target, damageOrHealing: this.damageOrHealing})
+            io.emit(this.event, {id: target.id, healing: this.damageOrHealing})
             target.receiveHealing(this.damageOrHealing!)
         })
     }
@@ -44,7 +44,7 @@ export class StatusSkill extends Skill {
     event = "anim-status"
     useSkill = (io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, targets: Array<Unit>, actor?: Unit, status?: Status) => {
         targets.map(target => {
-            io.emit(this.event, {target: target, status: status})
+            io.emit(this.event, {id: target.id, status: status})
             target.receiveStatus(status!)
         })
     }

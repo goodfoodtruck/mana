@@ -59,6 +59,12 @@
                 animation-duration: 0.2s;
                 animation-direction: normal;
             }
+            &[data-animation='2'] {
+                animation-name: receiveHealing;
+                animation-iteration-count: 1;
+                animation-duration: 0.4s;
+                animation-direction: normal;
+            }
         }
         
         &.choosing {
@@ -82,7 +88,7 @@
             }
         }
 
-        .Damage {
+        .DamageOrHealing {
             position: absolute;
             left: 40%;
             z-index: 4;
@@ -94,13 +100,24 @@
                 0px 0px 6px black,
                 0px 0px 6px black;
             opacity: 0;
+
+            &[data-type="damage"] {
+                color: white;
+            }
+
+            &[data-type="healing"] {
+                color:rgb(0, 184, 61);
+            }
             
             &[data-animation='1'] {
-                animation: receiveDamage 0.5s ease-out;
+                animation: receiveDamageOrHealing 0.5s ease-out;
+            }
+            &[data-animation='2'] {
+                animation: receiveDamageOrHealing 0.5s ease-out;
             }
         }
 
-        @keyframes receiveDamage {
+        @keyframes receiveDamageOrHealing {
             0% {
                 opacity: 1;
                 bottom: 60%;
@@ -111,6 +128,18 @@
             100% {
                 opacity: 0;
                 bottom: 150%;
+            }
+        }
+
+        @keyframes receiveHealing {
+            0% {
+                filter: brightness(1);
+            }
+            50% {
+                filter: brightness(1.6);
+            }
+            100% {
+                filter: brightness(1);
             }
         }
 

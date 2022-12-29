@@ -11,13 +11,23 @@ const Character = (
         choose: (id: string) => void 
     }) => {
 
-    const [damage, setDamage] = useState(Number)
+    const [damageOrHealing, setDamageOrHealing] = useState(Number)
+    const [type, setType] = useState(String)
     const [animation, setAnimation] = useState(0)
 
-    props.socket.on("anim-attack", (data: {id: string, damageOrHealing: number}) => {
+    props.socket.on("anim-attack", (data: {id: string, damage: number}) => {
         if (data.id === props.character.id) {
-            setDamage(data.damageOrHealing)
+            setType("damage")
+            setDamageOrHealing(data.damage)
             setAnimation(1)
+        }
+    })
+
+    props.socket.on("anim-heal", (data: {id: string, healing: number}) => {
+        if (data.id === props.character.id) {
+            setType("healing")
+            setDamageOrHealing(data.healing)
+            setAnimation(2)
         }
     })
 
@@ -27,7 +37,7 @@ const Character = (
             style={{gridColumn: props.character.position.x, gridRow: props.character.position.y, zIndex: props.character.position.z}}
             onClick={() => props.choose(props.character.id)}>
                 <img src={`/assets/img/${props.character.sprite.id}.sprite.png`} data-animation={animation} alt={props.character.id} />
-                <span className="Damage" onAnimationEnd={() => setAnimation(0)} data-animation={animation}>{damage}</span>
+                <span className="DamageOrHealing" onAnimationEnd={() => setAnimation(0)} data-animation={animation} data-type={type}>{damageOrHealing}</span>
         </div>
     )
 }

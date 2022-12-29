@@ -2,7 +2,6 @@ import { useState } from "react"
 import { Socket } from "socket.io-client"
 import PlayerStatus from "./PlayerStatus.component"
 import { Unit } from "../interfaces/unit"
-import { Action } from "../interfaces/action"
 
 const Menu = (
     props: {
@@ -10,9 +9,9 @@ const Menu = (
         allies: Array<Unit>
     }) => {
     const [isMyTurn, setIsMyTurn] = useState(false)
-    const [actions, setActions] = useState(Array<Action>)
+    const [skills, setSkills] = useState(Array<String>)
 
-    const pressButton = (action: Action) => {
+    const pressButton = (action: String) => {
         if (isMyTurn) {
             props.socket.emit("turn-action", action)
         }
@@ -22,16 +21,16 @@ const Menu = (
         myTurn ? setIsMyTurn(true) : setIsMyTurn(false)
     })
 
-    props.socket.on("actions-info", (actions: Array<Action>) => {
-        setActions(actions)
+    props.socket.on("actions-info", (skills: Array<String>) => {
+        setSkills(skills)
     })
 
     return (
         <div className='Menu'>
             <div className="container">
                 <div className="actions">
-                    {isMyTurn && actions.map(action => (
-                        <button key={action.name} className="btn success" onClick={() => pressButton(action)}>{action.name}</button>
+                    {isMyTurn && skills.map(skill => (
+                        <button key={"#" + skill} className="btn success" onClick={() => pressButton(skill)}>{skill}</button>
                     ))}
                     {!isMyTurn && <div>Wait for your round</div>}
                 </div>

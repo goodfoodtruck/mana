@@ -15,7 +15,7 @@ export class Unit {
     private _name: string
     private _maxHealth: number = 100
     private _health: number = this._maxHealth
-    private _skills: Array<Skill> = [HitSkill]
+    protected _skills: Array<Skill> = [HitSkill]
     private _statuses: Array<Status> = []
     private _attackBonus: number = 0
     private _armorBonus: number = 0

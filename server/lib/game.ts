@@ -29,10 +29,11 @@ export default class Game {
 
     public async Start() {
         await this.Update()
-        this.io.emit("actions-info", this.player.skills, async () => {
-            await setTimeout(1500)
-            return this.Round()
+        this.allies.map(ally => {
+            ally.socket?.emit("actions-info", ally.skills.map(skill => skill.name))
         })
+        await setTimeout(1500)
+        return this.Round()
     }
 
     private async Round() {
@@ -45,9 +46,9 @@ export default class Game {
 
         if (this.player.socket) {
             this.player.socket.emit("turn-state", true)
-            this.player.socket.once("turn-action", (receivedSkill: Skill) => {
+            this.player.socket.once("turn-action", (receivedSkill: string) => {
                 this.player.skills.map(skillElem => {
-                    if (receivedSkill.name === skillElem.name) skill = skillElem
+                    if (receivedSkill === skillElem.name) skill = skillElem
                 })
                 this.player.socket!.emit("turn-target", skill.targetCount)
                 this.player.socket!.once("turn-target-selected", async (receivedTargetsID: Array<String>) => {
