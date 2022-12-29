@@ -3,11 +3,10 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import { setTimeout } from "timers/promises"
 import Party from "./party"
 import { Unit } from "./characters/unit"
-import { Action } from "./characters/actions/action"
+import { Skill } from "./skills/skill"
 import Bestiary from "./characters/bestiary"
 
 export default class Game {
-
     private party: Party
     private io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
     private allies: Array<Unit>
@@ -21,9 +20,6 @@ export default class Game {
 
         this.allies = this.Placement(party.participants)
         this.enemies = this.Placement([
-            new Bestiary[Math.floor(Math.random() * Bestiary.length)],
-            new Bestiary[Math.floor(Math.random() * Bestiary.length)],
-            new Bestiary[Math.floor(Math.random() * Bestiary.length)],
             new Bestiary[Math.floor(Math.random() * Bestiary.length)]
         ])
 
@@ -33,14 +29,14 @@ export default class Game {
 
     public async Start() {
         await this.Update()
-        this.io.emit("actions-info", this.player.actions, async () => {
+        this.io.emit("actions-info", this.player.skills, async () => {
             await setTimeout(1500)
             return this.Round()
         })
     }
 
     private async Round() {
-        var action: Action
+        var skill: Skill
         var targets: Array<Unit> = []
 
         await this.Update()
@@ -49,44 +45,27 @@ export default class Game {
 
         if (this.player.socket) {
             this.player.socket.emit("turn-state", true)
-            this.player.socket.once("turn-action", (receivedAction: Action) => {
-                this.player.actions.map(actionElem => {
-                    if (receivedAction.name === actionElem.name) action = actionElem
+            this.player.socket.once("turn-action", (receivedSkill: Skill) => {
+                this.player.skills.map(skillElem => {
+                    if (receivedSkill.name === skillElem.name) skill = skillElem
                 })
-                this.player.socket!.emit("turn-target", action.targets)
+                this.player.socket!.emit("turn-target", skill.targetCount)
                 this.player.socket!.once("turn-target-selected", async (receivedTargetsID: Array<String>) => {
                     this.order.map(unit => {
                         if (receivedTargetsID.includes(unit.id)) targets.push(unit)
                     })
-                    return this.Action(action, targets)
+                    return this.Action(skill, targets)
                 })
             })
         } else {
-            return this.Action(this.player.actions[0], [this.allies[Math.floor(Math.random() * this.allies.length)]])
+            return this.Action(this.player.skills[0], [this.allies[Math.floor(Math.random() * this.allies.length)]])
         }
     }
 
-    private async Action(chosenAction: Action, targets: Array<Unit>) {
-        this.io.emit("message", `${this.player.name} uses ${chosenAction.name} !`)
-        await setTimeout(500)
-
-        await this.player.doAction(this.io, chosenAction, targets)
+    private async Action(chosenSkill: Skill, targets: Array<Unit>) {
+        await this.player.useSkill(this.io, chosenSkill, targets)
         await this.Update()
-
-        this.player.statusActions.map(statusAction => {
-            if (statusAction.duration) {
-                statusAction.duration -= 1
-                if (statusAction.duration <= 0) this.player.removeStatusAction(statusAction)
-            }
-        })
-        this.player.statusEffects.map(statusEffect => {
-            if (statusEffect.duration) {
-                statusEffect.duration -= 1
-                if (statusEffect.duration <= 0) this.player.removeStatusEffect(statusEffect)
-            }
-        })
-        await setTimeout(1000)
-
+        await setTimeout(500)
         return this.Turn()
     }
 

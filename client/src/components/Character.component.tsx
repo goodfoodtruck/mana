@@ -14,9 +14,9 @@ const Character = (
     const [damage, setDamage] = useState(Number)
     const [animation, setAnimation] = useState(0)
 
-    props.socket.on("anim-damage", (data: {id: string, damage: number}) => {
+    props.socket.on("anim-attack", (data: {id: string, damageOrHealing: number}) => {
         if (data.id === props.character.id) {
-            setDamage(data.damage)
+            setDamage(data.damageOrHealing)
             setAnimation(1)
         }
     })

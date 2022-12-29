@@ -1,64 +1,50 @@
 import { Namespace, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import { setTimeout } from "timers/promises"
-import { Action } from "./actions/action"
-import { HitAction } from "./actions/Hit.action"
-import { Status } from "./status/status"
-import { PoisonedStatus } from "./status/Poisoned.status"
+import { Status, StatusAttackOrHeal, StatusBonusOrMalus } from "../status/status"
+import { Skill } from "../skills/skill"
+import { HitSkill } from "../skills/Hit.skill"
 
 interface Sprite {
     id: string,
     category: "Small" | "Medium" | "Large"
 }
 
-export interface Bonuses {
-    attack : number
-    armor: number
-}
-
 export class Unit {
     private _id: string
     private _name: string
-    private _health: number
-    private _maxHealth: number
-    private _actions: Array<Action>
-    private _statusActions: Array<Status<"Action">>
-    private _statusEffects: Array<Status<"Effect">>
-    private _bonuses: Bonuses
+    private _maxHealth: number = 100
+    private _health: number = this._maxHealth
+    private _skills: Array<Skill> = [HitSkill]
+    private _statuses: Array<Status> = []
+    private _attackBonus: number = 0
+    private _armorBonus: number = 0
     private _sprite: Sprite
-    private _position = {x: 0, y: 0, z: 0}
+    private _position: {x: number, y: number, z: number} = {x: 0, y: 0, z: 0}
     public socket?: Socket
 
     constructor(name: string, sprite: Sprite, socket?: Socket) {
         this._id = name + "#" + Math.floor(Math.random() * 1000)
         this._name = name
-        this._health = this._maxHealth = 100
-        this._actions = [HitAction]
-        this._statusActions = [{...PoisonedStatus}]
-        this._statusEffects = []
-        this._bonuses = {
-            attack:  0,
-            armor: 0
-        }
         this._sprite = sprite
-        this._position = {x: 0, y: 0, z: 0}
         this.socket = socket
     }
 
-    public async doAction(io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, chosenAction: Action, targets: Array<Unit>) {
-        this._actions.map(action => {
-            if (chosenAction === action && action.factor) {
-                action.method(io, action.factor, targets, this._bonuses)
+    public async useSkill(io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, skill: Skill, targets: Array<Unit>) {
+        io.emit("message", `${this.name} uses ${skill.name} !`)
+        await setTimeout(1000)
+        skill.useSkill(io, targets, this, skill.status)
+        await setTimeout(500)
+        this._statuses.map(statusElem => {
+            if (statusElem instanceof StatusAttackOrHeal) {
+                statusElem.action(this)
+                io.emit(statusElem.event, {target: this.id, damageOrHealing: statusElem.factor})
             }
-        })
-        this._statusActions.map(async statusAction => {
-            await setTimeout(800)
-            statusAction.method(io, statusAction.factor, [this])
         })
     }
     
     public receiveDamage(damage: number) {
-        this._health -= (damage - this._bonuses.armor)
+        this._health -= (damage - this._armorBonus)
         if (this._health < 0) this._health = 0
     }
 
@@ -67,21 +53,14 @@ export class Unit {
         if (this._health >= this._maxHealth) this._health = this._maxHealth
     }
 
-    public receiveStatusAction(status: Status<"Action">) {
-        this._statusActions.push(status)
+    public receiveStatus(status: Status) {
+        this._statuses.push(status)
+        if (status instanceof StatusBonusOrMalus) status.affect(this)
     }
 
-    public removeStatusAction(status: Status<"Action">) {
-        this._statusActions = this._statusActions.filter(statusAction => status !== statusAction)
-    }
-
-    public receiveStatusEffect(status: Status<"Effect">) {
-        this._statusEffects.push(status)
-        status.method(this, status.factor)
-    }
-
-    public removeStatusEffect(status: Status<"Effect">) {
-        this._statusEffects = this._statusEffects.filter(statusEffect => status !== statusEffect)
+    public removeStatus(status: Status) {
+        if (status instanceof StatusBonusOrMalus) status.relieve(this)
+        this._statuses = this._statuses.filter(statusElem => status !== statusElem)
     }
     
     get info() {
@@ -110,28 +89,20 @@ export class Unit {
         this._health = health
     }
     
-    get actions() {
-        return this._actions
+    get skills() {
+        return this._skills
     }
     
-    get statusActions() {
-        return this._statusActions
-    }
-
-    get statusEffects() {
-        return this._statusEffects
-    }
-    
-    get bonuses() {
-        return this._bonuses
+    get statuses() {
+        return this._statuses
     }
     
     set attackBonus(attackBonus: number) {
-        this._bonuses.attack = attackBonus
+        this._attackBonus = attackBonus
     }
 
     set armorBonus(armorBonus: number) {
-        this._bonuses.attack = armorBonus
+        this._armorBonus = armorBonus
     }
     
     get sprite() {
