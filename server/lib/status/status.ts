@@ -9,6 +9,9 @@ export class Status {
         this.factor = factor
         this.duration = duration
     }
+    create() {
+        return new (this.constructor as new () => this)()
+    }
 }
 
 export class StatusAttackOrHeal extends Status {

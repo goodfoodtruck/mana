@@ -1,7 +1,7 @@
 import { Namespace, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import { setTimeout } from "timers/promises"
-import { Status, StatusAttackOrHeal, StatusBonusOrMalus } from "../status/status"
+import { Status, StatusAttack, StatusBonusOrMalus, StatusHeal } from "../status/status"
 import { Skill } from "../skills/skill"
 import { HitSkill } from "../skills/Hit.skill"
 
@@ -33,12 +33,16 @@ export class Unit {
     public async useSkill(io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, skill: Skill, targets: Array<Unit>) {
         io.emit("message", `${this.name} uses ${skill.name} !`)
         await setTimeout(1000)
-        skill.useSkill(io, targets, this, skill.status)
+        skill.useSkill(io, targets, this)
         await setTimeout(500)
         this._statuses.map(statusElem => {
-            if (statusElem instanceof StatusAttackOrHeal) {
+            if (statusElem instanceof StatusAttack || statusElem instanceof StatusHeal) {
                 statusElem.action(this)
-                io.emit(statusElem.event, {target: this.id, damageOrHealing: statusElem.factor})
+                io.emit(statusElem.event, {id: this.id, damage: statusElem.factor})
+            }
+            if (statusElem.duration) {
+                statusElem.duration -= 1
+                if (statusElem.duration <= 0) this.removeStatus(statusElem)
             }
         })
     }
