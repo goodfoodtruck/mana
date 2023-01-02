@@ -23,9 +23,9 @@ export class AttackSkill extends Skill {
         this.damageOrHealing = damageOrHealing
     }
     useSkill = (io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, targets: Array<Unit>, actor?: Unit) => {
-        this.damageOrHealing! += (actor?.attackBonus ? actor.attackBonus : 0)
+        var damage = this.damageOrHealing! + (actor?.attackBonus ? actor.attackBonus : 0)
         targets.map(target => {
-            io.emit(this.event, {id: target.id, damage: this.damageOrHealing})
+            io.emit(this.event, {id: target.id, damage: damage})
             target.receiveDamage(this.damageOrHealing!)
         })
     }

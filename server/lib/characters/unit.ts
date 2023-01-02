@@ -100,6 +100,14 @@ export class Unit {
     get statuses() {
         return this._statuses
     }
+
+    get attackBonus() {
+        return this._attackBonus
+    }
+
+    get armorBonus() {
+        return this._armorBonus
+    }
     
     set attackBonus(attackBonus: number) {
         this._attackBonus = attackBonus
