@@ -1,7 +1,8 @@
-import { AttackBonus } from "./status"
+import { StatusBonusOrMalus } from "./status";
 
-export class EnragedStatus extends AttackBonus {
-    constructor() {
-        super("Enraged", 2, 3)
-    }
+export const EnragedStatus: StatusBonusOrMalus = {
+    name: "Enraged",
+    factor: 2,
+    effect: "Attack",
+    duration: 2
 }

@@ -1,3 +1,8 @@
-import { AttackSkill } from "./skill";
+import { Skill } from "./skill";
 
-export const HitSkill: AttackSkill = new AttackSkill("Hit", 1, 5)
+export const HitSkill: Skill = {
+    name: "Hit",
+    type: "Attack",
+    targetCount: 1,
+    factor: 5
+}

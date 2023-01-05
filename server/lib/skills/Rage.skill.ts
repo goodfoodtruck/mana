@@ -1,4 +1,10 @@
-import { StatusSkill } from "./skill"
+import { SkillStatus } from "./skill"
 import { EnragedStatus } from "../status/Enraged.status"
 
-export const RageSkill: StatusSkill = new StatusSkill("Rage", 1, new EnragedStatus())
+export const RageSkill: SkillStatus = {
+    name: "Rage",
+    type: "Status",
+    targetCount: 1,
+    factor: 2,
+    status: EnragedStatus
+}

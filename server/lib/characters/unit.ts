@@ -1,8 +1,8 @@
 import { Namespace, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import { setTimeout } from "timers/promises"
-import { Status, StatusAttack, StatusBonusOrMalus, StatusHeal } from "../status/status"
-import { Skill } from "../skills/skill"
+import { Status, StatusBonusOrMalus } from "../status/status"
+import { Skill, SkillStatus } from "../skills/skill"
 import { HitSkill } from "../skills/Hit.skill"
 
 interface Sprite {
@@ -32,13 +32,47 @@ export class Unit {
 
     public async useSkill(io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, skill: Skill, targets: Array<Unit>) {
         io.emit("message", `${this.name} uses ${skill.name} !`)
-        await setTimeout(1000)
-        skill.useSkill(io, targets, this)
+        switch(skill.type) {
+            case "Attack":
+                var damage = skill.factor + this.attackBonus
+                targets.map(target => {
+                    io.emit("anim-attack", {id: target.id, damage: damage})
+                    target.receiveDamage(damage)
+                })
+                break
+            case "Healing":
+                var healing = skill.factor
+                targets.map(target => {
+                    io.emit("anim-healing", {id: target.id, healing: healing})
+                    target.receiveHealing(healing)
+                })
+                break
+            case "Status":
+                break
+        }
+
+        if (this.isSkillStatus(skill)) {
+            targets.map(target => {
+                io.emit("anim-status", {id: target.id, status: skill.status})
+                target.receiveStatus(skill.status)
+            })
+        }
+
         await setTimeout(500)
+        return this.affectStatuses(io)
+    }
+
+    private affectStatuses(io: Namespace<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) {
         this._statuses.map(statusElem => {
-            if (statusElem instanceof StatusAttack || statusElem instanceof StatusHeal) {
-                statusElem.action(this)
-                io.emit(statusElem.event, {id: this.id, damage: statusElem.factor})
+            switch(statusElem.type) {
+                case "Attack":
+                    io.emit("anim-attack", {id: this.id, damage: statusElem.factor})
+                    this.receiveDamage(statusElem.factor)
+                    break
+                case "Healing":
+                    io.emit("anim-healing", {id: this.id, healing: statusElem.factor})
+                    this.receiveHealing(statusElem.factor)
+                    break
             }
             if (statusElem.duration) {
                 statusElem.duration -= 1
@@ -47,26 +81,52 @@ export class Unit {
         })
     }
     
-    public receiveDamage(damage: number) {
+    private receiveStatus(status: Status) {
+        this._statuses.push(status)
+        if (this.isStatusBonusOrMalus(status)) {
+            switch(status.effect) {
+                case "Attack":
+                    this._attackBonus += status.factor
+                    break
+                case "Armor":
+                    this._armorBonus += status.factor
+                    break
+            }
+        }
+    }
+            
+    private removeStatus(status: Status) {
+        this._statuses = this._statuses.filter(statusElem => status !== statusElem)
+        if (this.isStatusBonusOrMalus(status)) {
+            switch(status.effect) {
+                case "Attack":
+                    this._attackBonus -= status.factor
+            break
+            case "Armor":
+                this._armorBonus -= status.factor
+                break
+            }
+        }
+    }
+
+    private receiveDamage(damage: number) {
         this._health -= (damage - this._armorBonus)
         if (this._health < 0) this._health = 0
     }
 
-    public receiveHealing(healing: number) {
+    private receiveHealing(healing: number) {
         this._health += healing
         if (this._health >= this._maxHealth) this._health = this._maxHealth
     }
-
-    public receiveStatus(status: Status) {
-        this._statuses.push(status)
-        if (status instanceof StatusBonusOrMalus) status.affect(this)
+            
+    private isStatusBonusOrMalus(status: Status): status is StatusBonusOrMalus {
+        return "effect" in status
     }
 
-    public removeStatus(status: Status) {
-        if (status instanceof StatusBonusOrMalus) status.relieve(this)
-        this._statuses = this._statuses.filter(statusElem => status !== statusElem)
+    private isSkillStatus(skill: Skill): skill is SkillStatus {
+        return "status" in skill
     }
-    
+
     get info() {
         return {
             name: this._name,

@@ -1,3 +1,8 @@
-import { HealSkill } from "./skill";
+import { Skill } from "./skill";
 
-export const CareSkill: HealSkill = new HealSkill("Care", 1, 5)
+export const CareSkill: Skill = {
+    name: "Care",
+    type: "Healing",
+    targetCount: 1,
+    factor: 5
+}

@@ -1,7 +1,8 @@
-import { StatusAttack } from "./status"
+import { Status } from "./status"
 
-export class BloodLossStatus extends StatusAttack {
-    constructor() {
-        super("Blood Loss", 2, 2)
-    }
+export const BloodLossStatus: Status = {
+    name: "Blood loss",
+    type: "Attack",
+    factor: 2,
+    duration: 3
 }

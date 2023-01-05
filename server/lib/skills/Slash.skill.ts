@@ -1,3 +1,10 @@
-import { AttackSkill } from "./skill";
+import { BloodLossStatus } from "../status/BloodLoss.status"
+import { SkillStatus } from "./skill"
 
-export const SlashSkill: AttackSkill = new AttackSkill("Slash", 2, 3)
+export const SlashSkill: SkillStatus = {
+    name: "Slash",
+    type: "Attack",
+    targetCount: 1,
+    factor: 2,
+    status: BloodLossStatus
+}
