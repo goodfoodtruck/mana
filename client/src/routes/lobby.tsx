@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { io, Socket } from "socket.io-client"
-import JoinParty from "./JoinParty.component"
-import Game from "./Game.component"
-
+import JoinParty from "../components/JoinParty.component"
+import Game from "../components/Game.component"
 
 const Lobby = (
     props: {
@@ -10,14 +9,14 @@ const Lobby = (
         mastery: String
     }
 ) => {
-    
+
     const [socket, setSocket] = useState(io())
     const [partyID, setPartyID] = useState(Number)
     const [participants, setParticipants] = useState(Array<String>)
     const [inGame, setInGame] = useState(false)
     const InitialSocket = io("http://localhost:4000/")
     const mountRef = useRef(false)
-    
+
     const start = () => {
         socket.emit("launch-game")
     }
@@ -31,7 +30,7 @@ const Lobby = (
         }
 
         socket.on("connect", () => {
-            socket.emit("player-info", {name: props.name, mastery: props.mastery})
+            socket.emit("player-info", { name: props.name, mastery: props.mastery })
         })
 
         return () => {
@@ -46,7 +45,7 @@ const Lobby = (
     socket.on("start-game", () => {
         setInGame(true)
     })
-    
+
     if (!inGame) {
         return (
             <div className="Lobby">
@@ -63,8 +62,8 @@ const Lobby = (
                 </div>
                 <JoinParty
                     socket={socket}
-                    setSocket={(socket: Socket) => setSocket(socket)}  
-                    setPartyID={(id: number) => setPartyID(id)} 
+                    setSocket={(socket: Socket) => setSocket(socket)}
+                    setPartyID={(id: number) => setPartyID(id)}
                 />
             </div>
         )

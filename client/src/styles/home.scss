@@ -1,0 +1,71 @@
+.Home {
+    width: 100%;
+
+    .title {
+        margin: 7vh auto;
+
+        h1 {
+            font-family: "Alagard";
+            font-size: 6em;
+            margin: 0;
+            text-align: center;
+            color: white;
+            text-shadow: 0 10px black;
+        }
+
+        h3 {
+            font-family: "Alagard";
+            text-shadow: 0 4px black;
+            margin: auto;
+            font-size: 1.5em;
+            text-align: center;
+            font-weight: normal;
+        }
+    }
+
+    .menu {
+        .card {
+            display: flex;
+            flex-flow: column;
+            width: 30vh;
+            margin: 2vh auto;
+            padding: 4vh;
+            text-align: center;
+
+            img {
+                width: 7vh;
+                height: auto;
+                margin: auto;
+            }
+        }
+    }
+
+    .btn {
+        display: contents;
+
+        a {
+            font-family: "RainyHearts";
+            font-size: 1.2em;
+            color: white;
+            padding: 0.5em;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            background:
+                url("../../public/assets/img/buttonTopLeft.png") top left no-repeat,
+                url("../../public/assets/img/buttonTopRight.png") top right no-repeat,
+                url("../../public/assets/img/buttonBottomRight.png") bottom right no-repeat,
+                url("../../public/assets/img/buttonBottomLeft.png") bottom left no-repeat,
+                url("../../public/assets/img/buttonTop.png") top repeat-x,
+                url("../../public/assets/img/buttonBottom.png") bottom repeat-x;
+
+            &:hover {
+                filter: brightness(150%);
+
+                &:active {
+                    filter: brightness(50%);
+                }
+            }
+        }
+    }
+}
